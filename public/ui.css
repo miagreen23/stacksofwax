@@ -1,0 +1,344 @@
+/* body styling */ 
+body {
+    background-size: 190%;
+    background-repeat: no-repeat;
+    background-image: url("Background.jpg");
+    background-color: #1e1e1e;
+    background-blend-mode: color-dodge;
+
+    font-family: "Clarkson",Helvetica,sans-serif;
+}
+
+.brandtext {
+    color: #2AC8B5;
+}
+
+.brandbackground {
+    background-color: #2AC8B5;
+}
+
+.whitetext {
+    color: white;
+}
+
+.brandiconhover :hover {
+    color: #2e9b8e;
+}
+
+#whiteiconhover :hover {
+    color: #dddddd;
+}
+
+/* navigation bar additional styling */
+.mynav {
+    margin-top: 4%;
+}
+
+/* my button styling */ 
+#solid {
+    background-color: #2AC8B5;
+    border: none;
+    border-radius: 30px;
+    color: #1B1B1B;
+}
+
+#solid:hover {
+    background-color: #2ab0a0;
+}
+
+#hollow {
+    border-radius: 30px;
+    color: white;
+}
+
+/* first section styling */ 
+
+.uk-container .firstsection {
+    height: 100vh; /*580px;*/
+    margin-top: 70px;
+}
+
+.firstsection h1{
+    color: white;
+    padding-left: 10px;
+    margin-bottom: 30px;
+}
+
+.firstsection #heading {
+    padding-right: 100px;
+    margin-right: 150px;
+}
+
+.firstsection #mysearch {
+    border-radius: 30px;
+    background-color: white;
+    color: #1E1E1E;
+    width: 120%;
+}
+
+/* second section styling */ 
+.secondsection {
+    background-color: #2AC8B5;
+}
+
+.secondsection #leftbox h1  {
+    color: white;
+    padding-right: 40px;
+    padding-top: 10px;
+    line-height: 1;
+}
+
+.secondsection #leftbox h4  {
+    color: white;
+    margin-top: 0px;
+}
+
+.secondsection #rightbox h3  {
+    color: white;
+    padding: 15px, 50px, 15px, 15px;
+    margin-right: 70px;
+    line-height: 1.1;
+}
+
+.secondsection a {
+    text-decoration: none;
+    color: white;
+    
+}
+
+.secondsection a:hover {
+    text-decoration: none;
+    color: rgb(213, 213, 213);
+}
+
+.secondsection #leftbox, #rightbox {
+    padding-left: 70px;
+    background: none;
+    box-shadow: none;
+}
+
+.secondsection #rightbox {
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+.secondsection #getstarted {
+    width: 180px;
+    height: 36px;
+    background-color: #1E1E1E;
+    border-radius: 30px;
+    border: none;
+    padding: 15px, 25px, 15px, 25px;
+}
+
+/* third section styling */ 
+.thirdsection {
+    height: fit-content;
+    background-color: white;
+    margin-top: 0px;
+}
+
+.thirdsection .gridbox {
+    height: 280px;
+}
+
+.thirdsection .gridbox:hover {
+    scale: 1.02;
+    box-shadow: 5px 5px 10px rgba(128, 128, 128, 0.131);
+    background-color: #1E1E1E;
+}
+
+.hover_extras {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.652);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .2s, visibility .2s;
+}
+
+.gridbox:hover .hover_extras {
+    visibility: visible;
+    opacity: 1;
+}
+
+.hover_text {
+    color: white;
+    width: 100%;
+    margin-left: 10px;
+    padding: 4px 0px 4px 0px;
+}
+
+
+
+/* fourth section styling */ 
+.fourthsection #mysearchbottom {
+    width: 120%;
+    background-color: none;
+    color: #2AC8B5;
+    border: thin solid #2AC8B5;
+    border-radius: 30px;
+}
+
+.fourthsection .rightside {
+    padding: 20px 10px 10px 10px;
+}
+
+.thinlineheight {
+    line-height: 1;
+}
+
+.balloon {
+    scale: 0.7;
+    margin: 0px;
+}
+
+
+/* toppicks styling */ 
+.toppicks {
+    background-color: #2AC8B5;
+    height: 470px;
+    width: 100%;
+}
+
+.toppicks .titlebanner h1 {
+    color: white;
+    padding-top: 40px;
+    margin-left: 50px;
+    font-weight: 600;
+    font-size: 2.2em;
+}
+
+.toppicks .titlebanner p {
+    color: white;
+    padding: 40px 0px 10px 40px;
+    margin-top: 15px;
+}
+
+.toppickscard {
+    background-color: white;
+    height: 300px;
+    width: 230px;
+    margin: 0px 8px 0px 8px;
+}
+
+.toppickscard h3 {
+    color: #1E1E1E;
+    font-size: medium;
+    margin-top: 10px;
+    margin-bottom: 2px;
+}
+
+.toppickscard .info {
+    margin-top: 5px;
+}
+
+.toppickscard p {
+    margin: 0px;
+    font-size: smaller;
+    color: #b3b3b3;
+}
+
+
+.toppickscard .icons {
+    margin-bottom: 15px; 
+    margin-right: 12px;
+}
+
+
+/* footer styling */ 
+.footer {
+    background-color: black;
+}
+
+.footerright {
+    padding: 20px;
+    margin-right: 70px;
+}
+
+.footerleft {
+    padding: 50px;
+}
+
+
+/* album page styling */
+
+.album_page {
+    height: 100vh;
+    background-color: #F3F3F3;
+}
+
+
+
+/* additional screen sizes styling */ 
+@media only screen and (min-width: 1458px) {
+   
+}
+
+@media only screen and (max-width: 1252px) {
+    
+  
+}
+
+@media only screen and (max-width: 1080px) {
+  
+}
+
+@media only screen and (max-width: 899px) {
+  
+  
+}
+
+@media only screen and (max-width: 780px) {
+  
+}
+
+@media only screen and (max-width: 640px) {
+    .fourthsection .leftside {
+        display: none;
+    }
+
+    .toppickscard .icons {
+        margin-bottom: 0px; 
+        margin-right: 0px;
+        padding-left: 170px;
+        padding-bottom: 10px;
+    }
+}
+
+
+@media only screen and (max-width: 492px) {
+    #headingcentre {
+    scale: 0.9;
+    }
+
+   .toppicks .titlebanner {
+    margin-bottom: 25px;
+   }
+
+    #seeall {
+        padding: 55px 0px 0px 0px;
+        margin: 0px 0px 0px 30px;
+        font-size: 0.8em;
+    }
+
+}
+
+@media only screen and (max-width: 434px) {
+    .toppicks {
+        height: 485px;
+    }
+
+    #seeall {
+        padding: 10px 0px 0px 0px;
+        margin: 0px 0px 25px 65px;
+    }
+
+    .toppicks .titlebanner {
+        margin-bottom: 5px;
+       }
+
+}

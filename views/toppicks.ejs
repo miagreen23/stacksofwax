@@ -1,0 +1,54 @@
+<div class="toppicks">
+    <div class="uk-grid titlebanner">
+        
+            <h1>Top picks for you</h1>
+            <p class="uk-text-default uk-text-right uk-align-right" id="seeall">SEE ALL <span uk-icon="icon: arrow-right; ratio: 1.2" id="whiteiconhover"></span> </p>
+      
+    </div>
+    <div class="uk-grid" style="margin-top: 0px; margin-left: 5px;">
+        <% album_genre_id.forEach( (album)=> { %>
+       
+            <div class="uk-width-1-4@s">
+
+           
+
+            <div class="uk-card uk-card-hover toppickscard">
+                <div class="uk-card-body" style="padding: 20px;">
+                    <div class="imagebox">
+                        <img src="<%= album.img_url %>">
+                    </div>
+                    <div class="uk-grid">
+                        <div class="uk-width">
+                            <div class="uk-card-title">
+                                <h3 class="uk-text-bolder"><%= album.artist_name %></h3>
+                                <div class="info uk-text-meta uk-text-bold uk-text-uppercase">
+                                    <p><%= album.album_name %></p>
+                                    <p><%= album.release_year %></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uk-width-1-3@s uk-position-bottom-right icons">
+                                <a href="" class="brandiconhover" uk-icon="icon: pencil; ratio: 1" style="color: #2AC8B5; float: left; margin: 1.5px;" uk-tooltip="title: Review Album; pos: top-left"></a>
+                                <a href="" class="brandiconhover" uk-icon="icon: plus; ratio: 1" style="color: #2AC8B5; float: left; margin: 1.5px;" uk-tooltip="title: Add to Collection; pos: top-left"></a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+          
+        </div>
+  <% }); %>
+        <div class="uk-width-1-4@s">
+
+        </div>
+
+        <div class="uk-width-1-4@s">
+
+        </div>
+
+        <div class="uk-width-1-4@s">
+
+        </div>
+    </div>
+</div>
