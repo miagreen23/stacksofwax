@@ -5,7 +5,6 @@ body {
     background-image: url("Background.jpg");
     background-color: #1e1e1e;
     background-blend-mode: color-dodge;
-
     font-family: "Clarkson",Helvetica,sans-serif;
 }
 
@@ -17,8 +16,16 @@ body {
     background-color: #2AC8B5;
 }
 
+.whitebackground {
+    background-color: white;
+}
+
 .whitetext {
     color: white;
+}
+
+.greytext {
+    color: #1E1E1E;
 }
 
 .brandiconhover :hover {
@@ -29,21 +36,23 @@ body {
     color: #dddddd;
 }
 
+
+
+
+
 /* navigation bar additional styling */
 .mynav {
     margin-top: 4%;
 }
 
-/* my button styling */ 
-#solid {
-    background-color: #2AC8B5;
-    border: none;
-    border-radius: 30px;
-    color: #1B1B1B;
-}
 
-#solid:hover {
+
+
+/* my button styling */ 
+
+.brand_button_solid:hover {
     background-color: #2ab0a0;
+    text-decoration: none;
 }
 
 #hollow {
@@ -51,78 +60,74 @@ body {
     color: white;
 }
 
-/* first section styling */ 
 
-.uk-container .firstsection {
+
+
+
+/* landing section styling */ 
+
+.uk-container .landing {
     height: 100vh; /*580px;*/
     margin-top: 70px;
 }
 
-.firstsection h1{
-    color: white;
+.landing h1{
     padding-left: 10px;
     margin-bottom: 30px;
 }
 
-.firstsection #heading {
+.landing #heading {
     padding-right: 100px;
     margin-right: 150px;
 }
 
-.firstsection #mysearch {
+.landing #mysearch {
     border-radius: 30px;
     background-color: white;
     color: #1E1E1E;
     width: 120%;
 }
 
-/* second section styling */ 
-.secondsection {
+
+
+
+
+/* "Find out why others love it" anon user banner styling */ 
+.anonbanner {
     background-color: #2AC8B5;
 }
 
-.secondsection #leftbox h1  {
-    color: white;
-    padding-right: 40px;
+.anonbanner #leftbox h1  {
     padding-top: 10px;
     line-height: 1;
 }
 
-.secondsection #leftbox h4  {
-    color: white;
-    margin-top: 0px;
-}
-
-.secondsection #rightbox h3  {
-    color: white;
+.anonbanner #rightbox h3  {
     padding: 15px, 50px, 15px, 15px;
-    margin-right: 70px;
     line-height: 1.1;
 }
 
-.secondsection a {
+.anonbanner a {
     text-decoration: none;
-    color: white;
-    
 }
 
-.secondsection a:hover {
+.anonbanner a:hover {
     text-decoration: none;
     color: rgb(213, 213, 213);
 }
 
-.secondsection #leftbox, #rightbox {
+.anonbanner #leftbox, #rightbox {
     padding-left: 70px;
     background: none;
     box-shadow: none;
 }
 
-.secondsection #rightbox {
+.anonbanner #rightbox {
     margin-top: 25px;
     margin-bottom: 20px;
 }
 
-.secondsection #getstarted {
+.anonbanner #getstarted {
     width: 180px;
     height: 36px;
     background-color: #1E1E1E;
@@ -131,18 +136,22 @@ body {
     padding: 15px, 25px, 15px, 25px;
 }
 
-/* third section styling */ 
-.thirdsection {
+
+
+
+
+/* album grids styling */ 
+.albumgrids {
     height: fit-content;
     background-color: white;
     margin-top: 0px;
 }
 
-.thirdsection .gridbox {
+.albumgrids .gridbox {
     height: 280px;
 }
 
-.thirdsection .gridbox:hover {
+.albumgrids .gridbox:hover {
     scale: 1.02;
     box-shadow: 5px 5px 10px rgba(128, 128, 128, 0.131);
     background-color: #1E1E1E;
@@ -174,16 +183,20 @@ body {
 
 
 
-/* fourth section styling */ 
-.fourthsection #mysearchbottom {
+/* filter/balloon section styling */ 
+.filterbanner {
+    width: 100%;
+    background-image: none;
+    background-color: #1E1E1E;
+}
+
+.filterbanner #mysearchbottom {
     width: 120%;
-    background-color: none;
-    color: #2AC8B5;
     border: thin solid #2AC8B5;
     border-radius: 30px;
 }
 
-.fourthsection .rightside {
+.filterbanner .rightside {
     padding: 20px 10px 10px 10px;
 }
 
@@ -193,7 +206,6 @@ body {
 
 .balloon {
     scale: 0.7;
-    margin: 0px;
 }
 
 
@@ -205,7 +217,6 @@ body {
 }
 
 .toppicks .titlebanner h1 {
-    color: white;
     padding-top: 40px;
     margin-left: 50px;
     font-weight: 600;
@@ -213,7 +224,6 @@ body {
 }
 
 .toppicks .titlebanner p {
-    color: white;
     padding: 40px 0px 10px 40px;
     margin-top: 15px;
 }
@@ -226,7 +236,6 @@ body {
 }
 
 .toppickscard h3 {
-    color: #1E1E1E;
     font-size: medium;
     margin-top: 10px;
     margin-bottom: 2px;
@@ -249,6 +258,8 @@ body {
 }
 
 
+
+
 /* footer styling */ 
 .footer {
     background-color: black;
@@ -264,12 +275,63 @@ body {
 }
 
 
-/* album page styling */
 
+/* individual album page styling */
 .album_page {
-    height: 100vh;
+    width: 100%;
     background-color: #F3F3F3;
 }
+
+#like_button {
+    background-color: #2AC8B5;
+    border: none;
+    border-radius: 30px;
+    color: white;
+}
+
+#like_button:hover {
+    background-color: #2ab2a2;
+}
+
+#like_button a {
+    color: white;
+}
+
+#like_button a:hover {
+    text-decoration: none;
+}
+
+.album_page img {
+    width: 100%;
+}
+
+.album_page #extras {
+    margin-top: 20px;
+}
+
+.album_page #extras a:hover {
+    text-decoration: none;
+}
+
+.album_page #extras .link {
+    padding: 3px;
+}
+
+#track_position_on_album {
+    width: 10%;
+    color: #2AC8B5;
+}
+
+#track_title {
+    width: 60%;
+}
+
+#track_duration {
+    width: 30%;
+}
+
+
+
 
 
 
@@ -297,7 +359,7 @@ body {
 }
 
 @media only screen and (max-width: 640px) {
-    .fourthsection .leftside {
+    .filterbanner .leftside {
         display: none;
     }
 
