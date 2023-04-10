@@ -36,8 +36,16 @@
           
             <div class="uk-width-1-2@s">
                 <div class="uk-text-right"> 
-                  <button class="uk-button uk-margin-small-right" id="like_button"><span uk-icon="icon: check"></span><a href="">Like</a></button>
-                  <button class="uk-button uk-button-default uk-margin-small-right" id="like_button"><a href="/">Go Back</a></button>
+
+                  <button class="like_button"><a href="#">
+                    <img src="like.png" alt="thumbs up" class="like_icon">
+                    <span class="like_text">LIKE</span>
+                  </a></button>
+
+                  <button class="back_button">
+                    <a href="/">
+                    <span class="back_text">BACK</span></a>
+                  </button>
                 </div>
             </div>  
         </div>
@@ -47,7 +55,7 @@
      
         <div class="uk-width-1-3@s">
             <div>
-              <img src="<%= album.img_url %>">
+              <img src="<%= album.img_url %>" class="album_image">
             </div>
 
             <div id="extras" class="uk-margin-medium-bottom">
@@ -89,7 +97,21 @@
               Tracklist
             </div>
             
-            <% track_details.forEach( (album)=> { %>
+            <% track_details.forEach( (album)=> { 
+
+            
+              const formatDuration = (duration) => {
+                let stringValue = duration.toString();
+                let parts = stringValue.split(".");
+                let decimalPart = parts[1];
+                if (decimalPart && decimalPart.length === 1) {
+                  decimalPart += "0"; // append zero if length is 1
+                }
+                let result = parts[0] + ":" + decimalPart;
+                return result;
+              }
+              
+            %>
             
             <div class="uk-grid" style="margin-top: 10px">
                 <div class="uk-width-1-3@s uk-text-bold uk-text-muted" id="track_position_on_album">
@@ -101,7 +123,7 @@
                 </div>
 
                 <div class="uk-width-1-3@s uk-text-muted" id="track_duration">
-                  <%= album.duration %>
+                  <%= formatDuration(album.duration) %>
                 </div>
             </div>
 
@@ -115,6 +137,16 @@
 
 
     <!-- REVIEW SECTION -->
+    <% const ratings = [] %>
+
+    <% review_details.forEach( (album)=> {
+      ratings.push(album.rating);
+    %>
+    <% }); %>
+
+    <% const averageRating = (ratings.reduce((acc, curr) => acc + curr, 0) / ratings.length).toFixed(1) %>
+   
+
     <div class="review_section uk-margin-medium-bottom uk-margin-large-top" style="background-color: #ffffff;;">
         <div class="uk-grid">
             <div class="uk-width-1-2@s">
@@ -126,77 +158,63 @@
 
             <div class="uk-width-1-2@s">
                 <div class="star_rating uk-text-large uk-text-bolder uk-text-secondary uk-text-right uk-margin-medium-right uk-margin-medium-top">
-                  <h1>4.8</h1>
+                  <h1><%= averageRating %> <img src="/Star.png" style="height: 40px; width: 40px; margin-bottom: 10px;"></h1>
                 </div>
                 
             </div>
         </div>
+        
+
+        <% review_details.forEach( (album)=> { 
+          
+          const options = {
+            weekday: 'long',
+            month:'long',
+            day:'2-digit',
+            year: 'numeric'
+          }
+          
+          let date = album.date_posted.toLocaleString('en-GB', options);
+
+        %>
+       
 
         <div class="review_title_and_rating uk-margin-medium-bottom"> <!-- start of one review -->
           <div class="uk-grid">
               <div class="uk-width-1-2@s uk-margin-medium-left" style="width: auto;">
-                  <h2 class="uk-text-bold uk-text-large">5</h2>
+                  <h2 class="uk-text-bold uk-text-large"><%= album.rating %> <img src="/Star.png" style="height: 25px; width: 25px; margin-bottom: 7px;"></h2>
               </div>
 
               <div class="uk-width-1-2@s" style="width: 60%;">
-                  <h2 style="color: #2AC8B5;" class="uk-text-bold uk-text-large">One of the greats!</h2>
+                  <h2 style="color: #2AC8B5;" class="uk-text-bold uk-text-large">
+                    <%= album.title %>
+                  </h2>
               </div>
           </div>
 
           <div class="review_body uk-margin-small-top uk-margin-medium-left uk-margin-medium-right">
               <p style="margin-bottom: 5px">
-                The best sounding of the three #thriller albums. The very first press. 1st US pressing: 
-                this sleeve version DOES NOT list #michaeljackson as a co-producer on back cover. Analogue 
-                smooth and clear. #billiejean sounds awesome here.Tested against the half speed mastered and 
-                the master sound DM japanese version.
+                <%= album.comment %>
               </p>
           </div>
 
           <div class="user_and_date">
               <div class="uk-grid uk-text-light uk-text-small uk-text-italic">
+             
                   <div class="uk-width-1-2@s uk-margin-medium-left" style="width: auto;">
-                      <p>user101</p>
+                  
+                      <p><%= album.username %></p>
+                   
                   </div>
-
+     
                   <div class="uk-width-1-2@s" style="width: 60%;">
-                    <p>06/03/2023</p>
+                    <p><%= date %></p>
                   </div>
               </div>
           </div>
         </div> <!-- end of one user's review-->
+        <% }); %>
 
-        <div class="review_title_and_rating uk-margin-medium-bottom"> <!-- start of one review -->
-            <div class="uk-grid">
-                <div class="uk-width-1-2@s uk-margin-medium-left" style="width: auto;">
-                    <h2 class="uk-text-bold uk-text-large">5</h2>
-                </div>
-
-                <div class="uk-width-1-2@s" style="width: 60%;">
-                    <h2 style="color: #2AC8B5;" class="uk-text-bold uk-text-large">One of the greats!</h2>
-                </div>
-            </div>
-
-            <div class="review_body uk-margin-small-top uk-margin-medium-left uk-margin-medium-right">
-                <p style="margin-bottom: 5px">
-                  The best sounding of the three #thriller albums. The very first press. 1st US pressing: 
-                  this sleeve version DOES NOT list #michaeljackson as a co-producer on back cover. Analogue 
-                  smooth and clear. #billiejean sounds awesome here.Tested against the half speed mastered and 
-                  the master sound DM japanese version.
-                </p>
-            </div>
-
-            <div class="user_and_date">
-                <div class="uk-grid uk-text-light uk-text-small uk-text-italic">
-                    <div class="uk-width-1-2@s uk-margin-medium-left" style="width: auto;">
-                        <p>user101</p>
-                    </div>
-
-                    <div class="uk-width-1-2@s" style="width: 60%;">
-                      <p>06/03/2023</p>
-                    </div>
-                </div>
-            </div>
-          </div> <!-- end of one user's review-->
         
           <div class="see_all_button uk-margin-medium-bottom">
               <button class="uk-button uk-button-default uk-margin-auto" style="border-radius: 30px; display: block;">SEE ALL</button>

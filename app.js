@@ -26,8 +26,9 @@ app.get("/", function (req, res) {
     let getid = req.query.bid;
 
     let read = `SELECT album_id, img_url FROM album LIMIT 9;
-                    SELECT album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
-                    SELECT album_id FROM album_genre WHERE genre_id = 1) LIMIT 8`;
+
+                SELECT album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
+                    SELECT album_id FROM album_genre WHERE genre_id = 1) LIMIT 10`;
 
     connection.query(read, [getid, getid], (err, albumdata)=>{
         if(err) throw err;
@@ -50,17 +51,26 @@ app.get("/album", function (req, res) {
         SELECT record_label_id FROM album WHERE album_id = ?);
         
         SELECT track.track_title, track.duration, track.track_position_on_album FROM track WHERE track_id IN (
-            SELECT track_id FROM track_album WHERE album_id = ?) `;
+            SELECT track_id FROM track_album WHERE album_id = ?);
+            
+        SELECT review.user_id, review.rating, review.title, review.comment, review.date_posted, user.username
+        FROM review
+        INNER JOIN album_review ON review.review_id = album_review.review_id
+        INNER JOIN user ON review.user_id = user.user_id
+        WHERE album_review.album_id = ? LIMIT 2; `;
+            
 
 
-    connection.query(getrow, [getid, getid, getid], (err, albumrow)=>{  
+    connection.query(getrow, [getid, getid, getid, getid], (err, albumrow)=>{  
         if(err) throw err;
 
         let album_details = albumrow[0];
-        let record_label_details = albumrow[1];
+        let record_label_details = albumrow[1]; 
         let track_details = albumrow[2];
+        let review_details = albumrow[3];
+        
 
-        res.render('album', {album_details, record_label_details, track_details});
+        res.render('album', {album_details, record_label_details, track_details, review_details});
     });
 
     
