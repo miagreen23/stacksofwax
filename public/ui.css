@@ -9,11 +9,11 @@ body {
 }
 
 .brandtext {
-    color: #2AC8B5;
+    color: #eb982b;
 }
 
 .brandbackground {
-    background-color: #2AC8B5;
+    background-color: #eb982b;
 }
 
 .whitebackground {
@@ -29,7 +29,7 @@ body {
 }
 
 .brandiconhover :hover {
-    color: #2e9b8e;
+    color: #dc8d26;
 }
 
 #whiteiconhover :hover {
@@ -51,7 +51,7 @@ body {
 /* my button styling */ 
 
 .brand_button_solid:hover {
-    background-color: #2ab0a0;
+    background-color: #dc8d26;
     text-decoration: none;
 }
 
@@ -94,7 +94,7 @@ body {
 
 /* "Find out why others love it" anon user banner styling */ 
 .anonbanner {
-    background-color: #2AC8B5;
+    background-color: #eb982b;
 }
 
 .anonbanner #leftbox h1  {
@@ -194,7 +194,7 @@ body {
 
 .filterbanner #mysearchbottom {
     width: 120%;
-    border: thin solid #2AC8B5;
+    border: thin solid #eb982b;
     border-radius: 30px;
 }
 
@@ -213,7 +213,7 @@ body {
 
 /* toppicks styling */ 
 .toppicks {
-    background-color: #2AC8B5;
+    background-color: #eb982b;
     height: 470px;
     width: 100%;
 }
@@ -285,11 +285,11 @@ body {
 }
 
 .like_button {
-    background-color: #2AC8B5;
+    background-color: #eb982b;
     color: white;
     border: none;
     border-radius: 30px;
-    padding: 6px 10px;
+    padding: 6px 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -299,7 +299,7 @@ body {
 .like_icon {
     width: 18px;
     margin-left: 6px;
-    margin-right: 10px;
+    margin-right: 5px;
 }
       
 .like_text {
@@ -308,7 +308,7 @@ body {
 }
 
 .like_button:hover {
-    background-color: #2ab2a2;
+    background-color: #dc8d26;
 }
 
 .like_button a:hover {
@@ -321,7 +321,7 @@ body {
 }
 
 .back_button {
-    background-color: #cccccc;
+    background-color: #d6d6d6;
     border: none;
     border-radius: 30px;
     padding: 8px 25px;
@@ -333,7 +333,7 @@ body {
 }
 
 .back_text {
-    color: #1e1e1e;
+    color: #494949;
     text-decoration: none;
 }
 
@@ -364,7 +364,7 @@ body {
 
 #track_position_on_album {
     width: 10%;
-    color: #2AC8B5;
+    color: #eb982b;
 }
 
 #track_title {
@@ -375,8 +375,76 @@ body {
     width: 30%;
 }
 
+.review_button {
+    width: 100%;
+    padding: 8px 20px;
+    margin: 4px 0px;
+    border: none;
+    border-radius: 30px;
+    background-color: #eb982b;
+    color: white;
+}
+
+.review_button:hover {
+    background-color: #dc8d26;
+}
+
+#collection_button {
+    width: 100%;
+    padding: 8px 20px;
+    margin: 4px 0px;
+    border: none;
+    border-radius: 30px;
+    background-color: #eb982b;
+    color: white;
+}
+
+#collection_button:hover {
+    background-color: #dc8d26;
+}
+
+#submit_button {
+    background-color: #eb982b;
+    padding: 7px 25px;
+    border: none;
+    border-radius: 30px;
+    color: white;
+}
+
+#submit_button:hover {
+    background-color: #dc8d26;
+}
+
+#close_button {
+    background-color:rgb(213, 213, 213);
+    border: none;
+    margin: 10px;
+    border-radius: 5px;
+    padding: 7px 12px;
+    color: #5d5d5d;
+}
+
+#close_button:hover {
+    background-color:rgb(194, 194, 194);
+}
 
 
+/* collections page styling */
+.collections_page {
+    width: 100%;
+    height: 2000px;
+    background-color: #F3F3F3;
+}
+
+.collections_link {
+    color: #1E1E1E;
+    text-decoration: none;
+}
+
+.collections_link:hover {
+    color: #dc8d26;
+    text-decoration: none;
+}
 
 
 

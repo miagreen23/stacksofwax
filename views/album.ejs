@@ -39,7 +39,7 @@
 
                   <button class="like_button"><a href="#">
                     <img src="like.png" alt="thumbs up" class="like_icon">
-                    <span class="like_text">LIKE</span>
+                    <span class="like_text uk-text-middle">LIKE</span>
                   </a></button>
 
                   <button class="back_button">
@@ -59,19 +59,66 @@
             </div>
 
             <div id="extras" class="uk-margin-medium-bottom">
-                <a href="">
-                  <div class="hover_text uk-text-left link">
-                    <span class="uk-icon-link ratio: 1.5; brandiconhover" uk-icon="plus"  style="color: #2AC8B5;"></span>
-                    <span class="uk-text-secondary">Add to Collection</span>
-                  </div>
-                </a>
 
-                <a href="">
+              <div class="hover_text uk-text-left link" style="margin-left: 0px;">
+                <button type="button" id="collection_button">
+                  <span class="uk-icon-link; ratio: 1.5; brandiconhover" uk-icon="plus"  style="color: white; margin-right: 6px;"></span>
+                  <span class="whitetext uk-text-default uk-text-middle">Add to Collection</span>
+                </button>
+              </div>
+              
+
+                <!-- This is a button toggling the modal -->
+                <div class="hover_text uk-text-left link" style="margin-left: 0px;">
+                  <button uk-toggle="target: #write_review" type="button" class="review_button">
+                    <span class="uk-icon-link; ratio: 1.7; brandiconhover" uk-icon="pencil"  style="color: white; margin-right: 6px;"></span>
+                    <span class="whitetext uk-text-default uk-text-middle">Review Album</span>
+                  </button>
+                </div>
+
+                <!-- This is the modal -->
+                <div id="write_review" uk-modal>
+                 
+                    <div class="uk-modal-dialog uk-modal-body">
+
+                      <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
+                      
+                        <h2 class="uk-modal-title">Review Album</h2>
+                        <p>Please type your review below...</p>
+                        
+                        <form action="/insert_review" method="POST">
+
+                          <div class="uk-margin">
+                            <input class="uk-input" type="text" placeholder="Title" aria-label="Title">
+                          </div>
+                      
+                          <div class="uk-margin">
+                            <textarea class="uk-textarea" rows="5" placeholder="Type your review here..." aria-label="Review"></textarea>
+                          </div>
+
+                          <div class="uk-margin">
+                            <p style="margin: 4px;">Rating:</p>
+                            <select class="uk-select" aria-label="Rating">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                          </div>
+                           <!-- Button -->
+                          <button type="submit" class="uk-text-default" id="submit_button">Submit</button>
+              
+                        </form>
+              
+                    </div>
+                </div>
+                <!--<a href="/album?bid=<%= album.album_id %>/writereview">
                   <div class="hover_text uk-text-left link">
                     <span class="uk-icon-link; ratio: 1.5; brandiconhover" uk-icon="pencil"  style="color: #2AC8B5;"></span>
                     <span class="uk-text-secondary">Write a Review</span>
                   </div>
-                </a>
+                </a>-->
             </div>
         </div> <!-- end of left side of box -->
       
@@ -139,12 +186,13 @@
     <!-- REVIEW SECTION -->
     <% const ratings = [] %>
 
-    <% review_details.forEach( (album)=> {
-      ratings.push(album.rating);
-    %>
-    <% }); %>
+    <% review_details.forEach(album => {
+        ratings.push(album.rating);
+    }); %>
 
-    <% const averageRating = (ratings.reduce((acc, curr) => acc + curr, 0) / ratings.length).toFixed(1) %>
+    <% const sum = ratings.reduce((acc, curr) => acc + curr, 0) %>
+    <% const averageRating = ratings.length > 0 ? (sum / ratings.length).toFixed(1) : 0 %>
+
    
 
     <div class="review_section uk-margin-medium-bottom uk-margin-large-top" style="background-color: #ffffff;;">
@@ -186,7 +234,8 @@
               </div>
 
               <div class="uk-width-1-2@s" style="width: 60%;">
-                  <h2 style="color: #2AC8B5;" class="uk-text-bold uk-text-large">
+                
+                  <h2 style="color: #eb982b;;" class="uk-text-bold uk-text-large">
                     <%= album.title %>
                   </h2>
               </div>

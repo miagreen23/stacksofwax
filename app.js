@@ -27,7 +27,7 @@ app.get("/", function (req, res) {
 
     let read = `SELECT album_id, img_url FROM album LIMIT 9;
 
-                SELECT album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
+                SELECT album_id, album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
                     SELECT album_id FROM album_genre WHERE genre_id = 1) LIMIT 10`;
 
     connection.query(read, [getid, getid], (err, albumdata)=>{
@@ -44,7 +44,7 @@ app.get("/album", function (req, res) {
 
     let getid = req.query.bid;
 
-    let getrow = ` SELECT album.album_name, album.artist_name,
+    let getrow = ` SELECT album.album_id, album.album_name, album.artist_name,
                     album.release_year, album.img_url FROM album WHERE album_id = ?;
         
                     SELECT record_label_name FROM record_label WHERE record_label_id IN (
@@ -57,7 +57,7 @@ app.get("/album", function (req, res) {
         FROM review
         INNER JOIN album_review ON review.review_id = album_review.review_id
         INNER JOIN user ON review.user_id = user.user_id
-        WHERE album_review.album_id = ? LIMIT 2; `;
+        WHERE album_review.album_id = ? LIMIT 2 `;
             
 
 
@@ -72,7 +72,32 @@ app.get("/album", function (req, res) {
 
         res.render('album', {album_details, record_label_details, track_details, review_details});
     });
+});
 
+
+app.get("/allcollections", function (req, res) {
+
+    let getid = req.query.cid;
+
+    let read = `SELECT c.collection_id, c.collection_name, c.collection_desc, u.username, g.genre_type
+    FROM collection c
+    INNER JOIN user u ON c.user_id = u.user_id
+    INNER JOIN album_collection ac ON c.collection_id = ac.collection_id
+    INNER JOIN genre g ON c.main_genre_id = g.genre_id
+    GROUP BY c.collection_id;
+                
+                SELECT genre_type FROM genre WHERE genre_ID IN (
+                    SELECT genre_ID FROM album_genre WHERE album_id IN (
+                        SELECT album_ID FROM album_collection WHERE collection_id = ?))`;
+
+    connection.query(read, [getid, getid], (err, data)=>{
+        if(err) throw err;
+
+        let collection_data = data[0];
+        let genre_type = data[1];
+        
+        res.render('all_collections', {collection_data, genre_type});
+    });
     
 });
 
