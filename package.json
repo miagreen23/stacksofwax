@@ -2,7 +2,7 @@
   "name": "stacksofwax",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "dependencies": {
     "acorn": "^7.4.1",
     "acorn-node": "^1.8.2",

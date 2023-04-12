@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stacksofwax</title>
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="ui.css">
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/css/uikit.min.css" />
+
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit-icons.min.js"></script>
+</head>
+<body>
+
+<%- include('header') %>
+
+<div class="album_page">
+
+        <div class="uk-container uk-container-center" style="height: 300px;">
+            <button class="back_button uk-margin-medium-top">
+                <a href="/"><span class="back_text">HOME</span></a>
+              </button>
+
+              <h1 class="uk-text-bold uk-text-center" style="font-size: 2.4em; margin-top: 100px;">Review Posted</h1>
+        </div>
+</div>
+
+
+
+    <%- include('filterbanner') %> 
+
+    <%- include('footer') %> 
+
+</body>
+</html>

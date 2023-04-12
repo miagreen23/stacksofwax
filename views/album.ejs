@@ -86,26 +86,25 @@
                         <h2 class="uk-modal-title">Review Album</h2>
                         <p>Please type your review below...</p>
                         
-                        <form action="/insert_review" method="POST">
+                        <form action="/albumreview" method="POST">
 
-                          <div class="uk-margin">
-                            <input class="uk-input" type="text" placeholder="Title" aria-label="Title">
+                          <div class="uk-form-row">
+                            <input name="title_field" class="uk-input" type="text" placeholder="Title" style="margin-bottom: 5px;">
                           </div>
-                      
-                          <div class="uk-margin">
-                            <textarea class="uk-textarea" rows="5" placeholder="Type your review here..." aria-label="Review"></textarea>
+                          <div class="uk-form-row">
+                            <textarea class="uk-textarea" rows="5" name= "comment_field" placeholder="Type your review here..." style="margin-bottom:10px;" required></textarea>
                           </div>
 
-                          <div class="uk-margin">
-                            <p style="margin: 4px;">Rating:</p>
-                            <select class="uk-select" aria-label="Rating">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
+                          <label for="rating" style="margin-right: 10px;">Rating:</label>
+                            <select name="rating_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray;" required>
+                              <option value="" selected>Select a rating…</option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
                             </select>
-                          </div>
+
                            <!-- Button -->
                           <button type="submit" class="uk-text-default" id="submit_button">Submit</button>
               
@@ -195,16 +194,16 @@
 
    
 
-    <div class="review_section uk-margin-medium-bottom uk-margin-large-top" style="background-color: #ffffff;;">
+    <div class="review_section uk-margin-large-bottom uk-margin-large-top" style="background-color: #ffffff;;">
         <div class="uk-grid">
-            <div class="uk-width-1-2@s">
+            <div class="uk-width-1-2@s" id="if_reviews_small">
                 <div class="review_title uk-margin-medium-left uk-margin-medium-top uk-text-large uk-text-secondary">
-                  <h1 style="font-weight: 600">Reviews</h1>
+                  <h1 style="font-weight: 600">Latest Reviews</h1>
         
                 </div>
             </div>
 
-            <div class="uk-width-1-2@s">
+            <div class="uk-width-1-2@s then_hide" id="if_reviews_small">
                 <div class="star_rating uk-text-large uk-text-bolder uk-text-secondary uk-text-right uk-margin-medium-right uk-margin-medium-top">
                   <h1><%= averageRating %> <img src="/Star.png" style="height: 40px; width: 40px; margin-bottom: 10px;"></h1>
                 </div>
@@ -263,12 +262,13 @@
           </div>
         </div> <!-- end of one user's review-->
         <% }); %>
+      </br>
 
         
-          <div class="see_all_button uk-margin-medium-bottom">
+          <!--<div class="see_all_button uk-margin-medium-bottom">
               <button class="uk-button uk-button-default uk-margin-auto" style="border-radius: 30px; display: block;">SEE ALL</button>
               </br>
-          </div>
+          </div>-->
 
        
 

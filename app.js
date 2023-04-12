@@ -2,9 +2,11 @@ const express = require("express");
 let app = express();
 const path = require("path");
 const mysql = require('mysql');
+const url = require('url');
 
 app.use(express.static(path.join(__dirname,'./public')));
 app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
 
 const connection = mysql.createConnection({
     host:'localhost',
@@ -57,7 +59,7 @@ app.get("/album", function (req, res) {
         FROM review
         INNER JOIN album_review ON review.review_id = album_review.review_id
         INNER JOIN user ON review.user_id = user.user_id
-        WHERE album_review.album_id = ? LIMIT 2 `;
+        WHERE album_review.album_id = ? LIMIT 3 `;
             
 
 
@@ -72,6 +74,59 @@ app.get("/album", function (req, res) {
 
         res.render('album', {album_details, record_label_details, track_details, review_details});
     });
+});
+
+
+
+app.post('/albumreview', (req, res) => {
+    
+    let title = req.body.title_field;
+    let comment = req.body.comment_field;
+    let rating = req.body.rating_field;
+    let current_date = new Date().toLocaleDateString('en-UK', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).split('/').reverse().join('-'); // format current date as YYYY-MM-DD
+   
+    let album_id = url.parse(req.headers.referer, true).query.bid;
+
+
+
+    let sqlinsert = `INSERT INTO review (review_id, user_id, rating, title, comment, date_posted)
+    VALUES (NULL, '1', "${rating}", "${title}", "${comment}", "${current_date}");
+
+    SET @last_id_in_review = LAST_INSERT_ID();
+    
+    INSERT INTO album_review (album_review_id, review_id, album_id) VALUES (NULL, @last_id_in_review, "${album_id}");`;
+
+    
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+
+        res.redirect(`/album?bid=${album_id}`);
+        res.render('Review Posted');
+    });
+});
+
+
+app.get("/allalbums", function (req, res) {
+    let getid = req.query.bid;
+
+    let read = `SELECT album.album_id, album.album_name, album.artist_name,
+    album.release_year, album.img_url FROM album`;
+
+
+    connection.query(read, [getid], (err, albumrow)=>{  
+        if(err) throw err;
+
+        let album_details = albumrow[0];
+        
+
+        res.render('all_albums', {album_details});
+    });
+
+    
 });
 
 
