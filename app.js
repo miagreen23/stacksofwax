@@ -103,30 +103,46 @@ app.post('/albumreview', (req, res) => {
     
     connection.query(sqlinsert, (err, data) => {
         if (err) throw err;
-
+        
         res.redirect(`/album?bid=${album_id}`);
-        res.render('Review Posted');
+        
     });
 });
+
+
 
 
 app.get("/allalbums", function (req, res) {
     let getid = req.query.bid;
 
-    let read = `SELECT album.album_id, album.album_name, album.artist_name,
-    album.release_year, album.img_url FROM album`;
+    let read = `SELECT album.album_id, album.album_name, album.artist_name, album.release_year, album.img_url, genre.genre_type
+                FROM album
+                LEFT JOIN album_genre ON album.album_id = album_genre.album_id
+                LEFT JOIN genre ON album_genre.genre_id = genre.genre_id;
 
+    SELECT DISTINCT genre_type
+    FROM genre
+    JOIN album_genre ON genre.genre_id = album_genre.genre_id;
+    
+    SELECT DISTINCT artist_name FROM album ORDER BY artist_name ASC;
+    
+    SELECT album.album_id, album.album_name, album.artist_name, album.release_year, album.img_url, GROUP_CONCAT(genre.genre_type) AS genre_types
+        FROM album
+        LEFT JOIN album_genre ON album.album_id = album_genre.album_id
+        LEFT JOIN genre ON album_genre.genre_id = genre.genre_id
+        GROUP BY album.album_id;`;
 
-    connection.query(read, [getid], (err, albumrow)=>{  
+    connection.query(read, [getid, getid], (err, albumrow)=>{  
         if(err) throw err;
-
-        let album_details = albumrow[0];
         
-
-        res.render('all_albums', {album_details});
+        album_details = albumrow[0];
+        unique_genre_type = albumrow[1];
+        unique_artist_name = albumrow[2];
+        unique_artist_details = albumrow[3];
+        
+        res.render("all_albums", {album_details, unique_genre_type, unique_artist_name, unique_artist_details});
     });
 
-    
 });
 
 
@@ -154,6 +170,41 @@ app.get("/allcollections", function (req, res) {
         res.render('all_collections', {collection_data, genre_type});
     });
     
+});
+
+app.get("/collection", function (req, res) {
+
+    let getid = req.query.cid;
+
+    let read = `SELECT album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
+        SELECT album_id FROM album_collection WHERE collection_id = ?);
+        
+        SELECT u.first_name, u.last_name, u.username, c.collection_name, c.collection_desc, c.main_genre_id, g.genre_type
+        FROM user u 
+        JOIN collection c ON u.user_id = c.user_id 
+        JOIN genre g ON c.main_genre_id = g.genre_id
+        WHERE c.collection_id = ?;
+
+        
+        SELECT review.user_id, review.rating, review.title, review.comment, review.date_posted, user.username
+        FROM review
+        INNER JOIN collection_review ON review.review_id = collection_review.review_id
+        INNER JOIN user ON review.user_id = user.user_id
+        WHERE collection_review.collection_id = ? LIMIT 3;
+        
+        SELECT collection_id FROM collection WHERE collection_id = ?;`;
+
+    connection.query(read, [getid, getid, getid, getid], (err, collectionrow)=>{  
+        if(err) throw err;
+
+        let album_details = collectionrow[0];
+        let user_details = collectionrow[1];
+        let review_details = collectionrow[2];
+        let collection_details = collectionrow[3];
+
+
+        res.render('individual_collection', {album_details, user_details, review_details, collection_details} );
+    });
 });
 
 app.get("/register", function (req, res) {

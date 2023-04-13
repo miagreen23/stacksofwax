@@ -16,24 +16,27 @@
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit-icons.min.js"></script>
 </head>
-<body>
+<body id="collections_page_body">
 
 <%- include('header') %>
 
 <div class="collections_page">
+        
+            <div class="uk-container uk-container-center">
 
-        <div class="uk-container uk-container-center">
+                <button class="back_button uk-margin-medium-top uk-align-left">
+                    <a href="/">
+                    <span class="back_text">BACK</span></a>
+                </button>
+    
+                <h1 class="uk-text-bold uk-text-center" style="font-size: 2.4em; padding-right: 90px;">Browse Collections</h1>        
 
-            <div class="uk-margin-medium-top">
-                <h1 class="uk-text-bold" style="font-size: 2.4em;">Browse Collections</h1>
-            </div>
-
-                <div uk-filter="target: .js-filter">
+                <div uk-grid uk-filter="target: .js-filter">
                     <div class="uk-grid">
-                        <div class="uk-width-1-5 uk-margin-small-top uk-width-expand if_small_screen">
+                        <div class="uk-width-1-4 uk-margin-small-top uk-width-expand if_small_screen">
                             <h5 class="uk-text-bold">GENRE:</h5>
                             <ul class="uk-subnav uk-subnav-pill uk-align-left">
-                                <li class="uk-warning" uk-filter-control><a href="#">View All</a></li>
+                                <li class="uk-warning" uk-filter-control id="active"><a href="#">View All</a></li>
 
                                 <% collection_data.forEach( (collection) => { %>
                                     <li uk-filter-control=".tag-<%=collection.genre_type%>"><a href="#"><%=collection.genre_type%></a></li>
@@ -42,7 +45,7 @@
                             </ul>
                         </div>
 
-                        <div class="uk-width-4-5" style="margin-left: 30px;">
+                        <div class="uk-width-3-4" style="margin-left: 10px;">
                             <dl class="uk-description-list uk-description-list-divider">
                                 <ul class="js-filter uk-list uk-list-divider uk-margin-medium-top">
                                     
@@ -50,11 +53,11 @@
                                     <% collection_data.forEach( (collection) => { %>
 
                                         <li class="tag-<%= collection.genre_type %>">
-                                            <a href="/allcollections?cid=<%= collection.collection_id %>" class="collections_link">
+                                            <a href="/collection?cid=<%= collection.collection_id %>" class="collections_link">
                                                 
                                                 <dt><%= collection.collection_name %></dt>
                                                 <dd><%= collection.collection_desc %></dd>
-                                                <div class="uk-badge-warning"><dd class="uk-text-muted uk-text-italic uk-margin-small-top"><span class="uk-badge" style="margin-right: 10px; padding: 8px;"><%=collection.genre_type%></span><%= collection.username %></dd></div>
+                                                <div class="uk-badge-warning"><dd class="uk-text-muted uk-text-italic uk-margin-small-top"><span class="uk-badge" style="margin-right: 10px; padding: 8px; background: #eb982b;"><%=collection.genre_type%></span><%= collection.username %></dd></div>
                                             </a>
                                         </li>
 
