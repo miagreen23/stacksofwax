@@ -16,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit-icons.min.js"></script>
 </head>
-<body>
+<body id="login_page_body">
     <%- include('header') %>
 
     <div class="uk-width-expand uk-background-muted">
@@ -42,7 +42,7 @@
         <div class="uk-flex uk-flex-center">
             <div class="uk-card uk-card-default uk-card-hover uk-card-body uk-width-large" style="margin-bottom: 30px;">
                 <h3>Register for Account</h3>
-                <form class="uk-form-stacked" action="" method="post">
+                <form class="uk-form-stacked" action="/registeruser" method="POST">
                     <div class="uk-margin">
                         <label class="uk-form-label" for="firstname">
                             First Name
@@ -50,7 +50,7 @@
                         <div class="uk-form-controls">
                             <div class="uk-inline uk-width-1-1">
                                 <a class="uk-form-icon uk-form-icon-flip" uk-tooltip="title: This field is required; pos: bottom-right"><i class="fas fa-info-circle"></i></a>
-                                <input class="uk-input" id="firstname" name="firstname" type="text">
+                                <input class="uk-input" name="firstname_field" type="text">
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                         <div class="uk-form-controls">
                             <div class="uk-inline uk-width-1-1">
                                 <a class="uk-form-icon uk-form-icon-flip" uk-tooltip="title: This field is required; pos: bottom-right"><i class="fas fa-info-circle"></i></a>
-                                <input class="uk-input" id="lastname" name="lastname" type="text">
+                                <input class="uk-input" name="lastname_field" type="text">
                             </div>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                         <div class="uk-form-controls">
                             <div class="uk-inline uk-width-1-1">
                                 <a class="uk-form-icon uk-form-icon-flip" uk-tooltip="title: Minimum 3 characters<br>Maximum 16 characters.<br>This field is required.; pos: bottom-right"><i class="fas fa-info-circle"></i></a>
-                                <input class="uk-input" id="username" name="username" type="text">
+                                <input class="uk-input" name="username_field" type="text">
                             </div>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                         <div class="uk-form-controls">
                             <div class="uk-inline uk-width-1-1">
                                 <a class="uk-form-icon uk-form-icon-flip" uk-tooltip="title: Must be a valid email<br>One account per email<br>This field is required; pos: bottom-right"><i class="fas fa-info-circle"></i></a>
-                                <input class="uk-input" id="email" name="email" type="text">
+                                <input class="uk-input" name="email_field" type="text">
                             </div>
                         </div>
                     </div>
@@ -94,14 +94,14 @@
                         <div class="uk-form-controls">
                             <div class="uk-inline uk-width-1-1">
                                 <a class="uk-form-icon uk-form-icon-flip" uk-tooltip="title: Minimum 8 characters<br>This field is required; pos: bottom-right"><i class="fas fa-info-circle"></i></a>
-                                <input class="uk-input" id="password" name="password" type="password">
+                                <input class="uk-input" name="password_field" type="password">
                             </div>
                         </div>
                     </div>
                     <div class="uk-margin">
-                        <label>
+                        <!--<label>
                             <input class="uk-checkbox" name="terms_of_service" type="checkbox"> I accept the <a href="">terms of service</a>.
-                        </label>
+                        </label>-->
                     </div>
                     <button class="uk-button uk-button-primary uk-width-1-1" style="background-color: #eb982b;;" type="submit">Register</button>
                 </form>

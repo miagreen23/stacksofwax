@@ -1,59 +1,124 @@
-<header> <!-- Main Navbar -->
-    <div class="uk-preserve-color">
 
-        <div uk-sticky="start: 500; animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent uk-dark">
+
+<% if (req.session.sessValid) { %>
+
+    <header> <!-- Main Navbar -->
+        <div class="uk-preserve-color">
     
-            <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
-                <div class="uk-navbar-left" style="padding-left: 40px;">
-                    <ul class="uk-navbar-nav">
-                        <li class="uk-active">
-                            <a href="/" style="color:rgb(133, 133, 133); font-size: larger;"><strong>STACKS</strong>OFWAX</a>
-                        </li> 
-                    </ul>
-                </div>
-                <div class="uk-navbar-right" style="padding-right: 40px;">
-                    <ul class="uk-navbar-nav uk-visible@s">
-                        <li><a class="uk-text-large" href="/allalbums">ALBUMS</a></li>
-                        <li><a class="uk-text-large" href="/allcollections">COLLECTIONS</a></li>
-                        
-                        <li>
-                            <div class="uk-navbar-item">
-                            <form class="uk-search uk-search-navbar" style="width: 120px;">
-                                <span uk-search-icon style="scale: 0.7;"></span>
-                                <input class="uk-search-input" type="search" placeholder="SEARCH" aria-label="Search" style="font-size: 1.03em;">
-                            </form>
-                            </div>
-                        </li> 
-
-                        <li><a class="uk-text-large brandtext" href="#"><span uk-icon="icon: more" style="color: #eb982b; scale: 0.9;"></span></a>
-                            <div uk-dropdown>
-                                <ul class="uk-nav uk-navbar-dropdown-nav">
-                                    <li><a href="/"><span class="uk-margin-small-right" uk-icon="icon: list" style="color: #eb982b;"></span>My Collections</a></li>
-                                    <li><a href="/login"><span class="uk-margin-small-right" uk-icon="icon: sign-in" style="color: #eb982b;"></span>Login</a></li>
-                                    <li><a href="/register"><span class="uk-margin-small-right" uk-icon="icon: user" style="color: #eb982b;""></span>Register</a></li>
-                                </ul>
-                              </div>
-                        </li>
-                    </ul>
-                    <a href="#" class="uk-navbar-toggle uk-hidden@s" uk-navbar-toggle-icon uk-toggle="target: #sidenav"></a>
-                </div>
-            </nav>
+            <div uk-sticky="start: 500; animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent uk-dark">
+        
+                <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+                    <div class="uk-navbar-left" style="padding-left: 40px;">
+                        <ul class="uk-navbar-nav">
+                            <li class="uk-active">
+                                <a href="/" style="color:rgb(133, 133, 133); font-size: larger;"><strong>STACKS</strong>OFWAX</a>
+                            </li> 
+                        </ul>
+                    </div>
+                    <div class="uk-navbar-right" style="padding-right: 40px;">
+                        <ul class="uk-navbar-nav uk-visible@s">
+                            <li><a class="uk-text-large" href="/allalbums">ALBUMS</a></li>
+                            <li><a class="uk-text-large" href="/allcollections">COLLECTIONS</a></li>
+                            
+                            <li>
+                                <div class="uk-navbar-item">
+                                <form class="uk-search uk-search-navbar" style="width: 120px;">
+                                    <span uk-search-icon style="scale: 0.7;"></span>
+                                    <input class="uk-search-input" type="search" placeholder="SEARCH" aria-label="Search" style="font-size: 1.03em;">
+                                </form>
+                                </div>
+                            </li> 
+    
+                            <li><a class="uk-text-large brandtext" href="#"><span uk-icon="icon: more" style="color: #eb982b; scale: 0.9;"></span></a>
+                                <div uk-dropdown>
+                                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                                        <li><a href="/mycollections"><span class="uk-margin-small-right" uk-icon="icon: list" style="color: #eb982b;"></span>My Collections</a></li>
+                                        <li><a href="/logout"><span class="uk-margin-small-right" uk-icon="icon: sign-out" style="color: #eb982b;"></span>Logout</a></li>
+                                    </ul>
+                                  </div>
+                            </li>
+                        </ul>
+                        <a href="#" class="uk-navbar-toggle uk-hidden@s" uk-navbar-toggle-icon uk-toggle="target: #sidenav"></a>
+                    </div>
+                </nav>
+            </div>
+    </header>
+    
+    <div id="sidenav" uk-offcanvas="flip: true" class="uk-offcanvas">
+        <div class="uk-offcanvas-bar">
+            <button class="uk-offcanvas-close" type="button" uk-close style="margin: 8px;"></button>
+            <ul class="uk-nav uk-nav-default uk-margin-large-top">
+                    <li class="uk-active uk-text-italic"><a href="/">HOME</a></li>
+                    <li class="uk-active uk-text-italic"><a href="/allalbums">ALBUMS</a></li>
+                    <li class="uk-active uk-text-italic"><a href="/allcollections">COLLECTIONS</a></li>
+    
+                    <li class="uk-nav-header uk-margin-medium-top">MY ACCOUNT</li>
+                    <li class="uk-parent"><a href="/mycollections"><span class="uk-margin-small-right" uk-icon="icon: list"></span>My Collections</a></li>
+                    <li class="uk-parent"><a href="/logout"><span class="uk-margin-small-right" uk-icon="icon: list"></span>Logout</a></li>
+    
+            </ul>
         </div>
-</header>
-
-<div id="sidenav" uk-offcanvas="flip: true" class="uk-offcanvas">
-    <div class="uk-offcanvas-bar">
-        <button class="uk-offcanvas-close" type="button" uk-close style="margin: 8px;"></button>
-        <ul class="uk-nav uk-nav-default uk-margin-large-top">
-                <li class="uk-active uk-text-italic"><a href="/">HOME</a></li>
-                <li class="uk-active uk-text-italic"><a href="/allalbums">ALBUMS</a></li>
-                <li class="uk-active uk-text-italic"><a href="/allcollections">COLLECTIONS</a></li>
-
-                <li class="uk-nav-header uk-margin-medium-top">MY ACCOUNT</li>
-                <li class="uk-parent"><a href="/user_collections"><span class="uk-margin-small-right" uk-icon="icon: list"></span>My Collections</a></li>
-                <li class="uk-parent"><a href="/login"><span class="uk-margin-small-right" uk-icon="icon: sign-in"></span>Login</a></li>
-                <li class="uk-parent"><a href="/register"><span class="uk-margin-small-right" uk-icon="icon: user"></span>Register</a></li>
-            
-        </ul>
     </div>
-</div>
+
+
+    <% } else { %>
+
+        <header> <!-- Main Navbar -->
+            <div class="uk-preserve-color">
+        
+                <div uk-sticky="start: 500; animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent uk-dark">
+            
+                    <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+                        <div class="uk-navbar-left" style="padding-left: 40px;">
+                            <ul class="uk-navbar-nav">
+                                <li class="uk-active">
+                                    <a href="/" style="color:rgb(133, 133, 133); font-size: larger;"><strong>STACKS</strong>OFWAX</a>
+                                </li> 
+                            </ul>
+                        </div>
+                        <div class="uk-navbar-right" style="padding-right: 40px;">
+                            <ul class="uk-navbar-nav uk-visible@s">
+                                <li><a class="uk-text-large" href="/allalbums">ALBUMS</a></li>
+                                <li><a class="uk-text-large" href="/allcollections">COLLECTIONS</a></li>
+                                
+                                <li>
+                                    <div class="uk-navbar-item">
+                                    <form class="uk-search uk-search-navbar" style="width: 120px;">
+                                        <span uk-search-icon style="scale: 0.7;"></span>
+                                        <input class="uk-search-input" type="search" placeholder="SEARCH" aria-label="Search" style="font-size: 1.03em;">
+                                    </form>
+                                    </div>
+                                </li> 
+        
+                                <li><a class="uk-text-large brandtext" href="#"><span uk-icon="icon: more" style="color: #eb982b; scale: 0.9;"></span></a>
+                                    <div uk-dropdown>
+                                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                                            <li><a href="/login"><span class="uk-margin-small-right" uk-icon="icon: sign-in" style="color: #eb982b;"></span>Login</a></li>
+                                            <li><a href="/register"><span class="uk-margin-small-right" uk-icon="icon: user" style="color: #eb982b;"></span>Register</a></li>
+                                        </ul>
+                                      </div>
+                                </li>
+                            </ul>
+                            <a href="#" class="uk-navbar-toggle uk-hidden@s" uk-navbar-toggle-icon uk-toggle="target: #sidenav"></a>
+                        </div>
+                    </nav>
+                </div>
+        </header>
+        
+        <div id="sidenav" uk-offcanvas="flip: true" class="uk-offcanvas">
+            <div class="uk-offcanvas-bar">
+                <button class="uk-offcanvas-close" type="button" uk-close style="margin: 8px;"></button>
+                <ul class="uk-nav uk-nav-default uk-margin-large-top">
+                        <li class="uk-active uk-text-italic"><a href="/">HOME</a></li>
+                        <li class="uk-active uk-text-italic"><a href="/allalbums">ALBUMS</a></li>
+                        <li class="uk-active uk-text-italic"><a href="/allcollections">COLLECTIONS</a></li>
+        
+                        <li class="uk-parent"><a href="/login"><span class="uk-margin-small-right" uk-icon="icon: sign-in"></span>Login</a></li>
+                        <li class="uk-parent"><a href="/register"><span class="uk-margin-small-right" uk-icon="icon: user"></span>Register</a></li>
+                    
+                </ul>
+            </div>
+        </div>
+
+
+<% } %>

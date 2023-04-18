@@ -3,10 +3,30 @@ let app = express();
 const path = require("path");
 const mysql = require('mysql');
 const url = require('url');
+const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const sessions = require('express-session'); 
+const oneHour = 1000 * 60 * 60 * 1;
 
+
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'./public')));
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
+
+// middleware to set the req variable in response locals
+app.use(function(req, res, next) {
+    res.locals.req = req;
+    next();
+  });
+
+//middleware to config sesssion data
+app.use(sessions({
+   secret: "thisisasecretsession",
+   saveUninitialized: true,
+   cookie: { maxAge: oneHour },
+   resave: false
+}));
 
 const connection = mysql.createConnection({
     host:'localhost',
@@ -22,27 +42,59 @@ connection.connect((err)=>{
     console.log("Connected to local MySQL Database");
 });
 
+app.get("/", (req, res) => {
+    let sessionObj = req.session;
 
-app.get("/", function (req, res) {
+    if(sessionObj.sessValid) {
+        res.redirect('home');
+    } else {
+        res.redirect('home');
+    }  
+  
+});
 
+
+app.get("/home", function (req, res) {
     let getid = req.query.bid;
-
+   
     let read = `SELECT album_id, img_url FROM album LIMIT 9;
 
-                SELECT album_id, album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
-                    SELECT album_id FROM album_genre WHERE genre_id = 1) LIMIT 10`;
+    SELECT album_id, album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
+        SELECT album_id FROM album_genre WHERE genre_id = 1) LIMIT 10;`; 
+   
 
-    connection.query(read, [getid, getid], (err, albumdata)=>{
+     connection.query(read, [getid, getid], (err, albumdata)=>{
         if(err) throw err;
 
         let top_albums = albumdata[0];
         let album_genre_id = albumdata[1];
         
-        res.render('anonindex', {top_albums, album_genre_id});
+        res.render('loggedin_index', {top_albums, album_genre_id});
     });
 });
 
-app.get("/album", function (req, res) {
+
+app.get("/home", function (req, res) {
+    let getid = req.query.bid;
+   
+    let read = `SELECT album_id, img_url FROM album LIMIT 9;
+
+    SELECT album_id, album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
+        SELECT album_id FROM album_genre WHERE genre_id = 2) LIMIT 10;`; 
+   
+
+     connection.query(read, [getid, getid], (err, albumdata)=>{
+        if(err) throw err;
+
+        let top_albums = albumdata[0];
+        let album_genre_id = albumdata[1];
+        
+        res.render('anon_index', {top_albums, album_genre_id});
+    });
+});
+
+
+app.get("/album", (req, res) => {
 
     let getid = req.query.bid;
 
@@ -91,10 +143,11 @@ app.post('/albumreview', (req, res) => {
    
     let album_id = url.parse(req.headers.referer, true).query.bid;
 
-
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id; 
 
     let sqlinsert = `INSERT INTO review (review_id, user_id, rating, title, comment, date_posted)
-    VALUES (NULL, '1', "${rating}", "${title}", "${comment}", "${current_date}");
+    VALUES (NULL, "${user_id}", "${rating}", "${title}", "${comment}", "${current_date}");
 
     SET @last_id_in_review = LAST_INSERT_ID();
     
@@ -112,7 +165,7 @@ app.post('/albumreview', (req, res) => {
 
 
 
-app.get("/allalbums", function (req, res) {
+app.get("/allalbums", (req, res) => {
     let getid = req.query.bid;
 
     let read = `SELECT album.album_id, album.album_name, album.artist_name, album.release_year, album.img_url, genre.genre_type
@@ -146,7 +199,7 @@ app.get("/allalbums", function (req, res) {
 });
 
 
-app.get("/allcollections", function (req, res) {
+app.get("/allcollections", (req, res) => {
 
     let getid = req.query.cid;
 
@@ -157,26 +210,28 @@ app.get("/allcollections", function (req, res) {
     INNER JOIN genre g ON c.main_genre_id = g.genre_id
     GROUP BY c.collection_id;
                 
-                SELECT genre_type FROM genre WHERE genre_ID IN (
-                    SELECT genre_ID FROM album_genre WHERE album_id IN (
-                        SELECT album_ID FROM album_collection WHERE collection_id = ?))`;
+    SELECT genre_type FROM genre WHERE genre_ID IN (
+        SELECT genre_ID FROM album_genre WHERE album_id IN (
+            SELECT album_ID FROM album_collection WHERE collection_id = ?));`;
 
-    connection.query(read, [getid, getid], (err, data)=>{
+    connection.query(read, [getid], (err, data)=>{
         if(err) throw err;
 
         let collection_data = data[0];
         let genre_type = data[1];
+
+        
         
         res.render('all_collections', {collection_data, genre_type});
     });
     
 });
 
-app.get("/collection", function (req, res) {
+app.get("/collection", (req, res) => {
 
     let getid = req.query.cid;
 
-    let read = `SELECT album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
+    let read = `SELECT album_id, album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
         SELECT album_id FROM album_collection WHERE collection_id = ?);
         
         SELECT u.first_name, u.last_name, u.username, c.collection_name, c.collection_desc, c.main_genre_id, g.genre_type
@@ -184,13 +239,12 @@ app.get("/collection", function (req, res) {
         JOIN collection c ON u.user_id = c.user_id 
         JOIN genre g ON c.main_genre_id = g.genre_id
         WHERE c.collection_id = ?;
-
         
         SELECT review.user_id, review.rating, review.title, review.comment, review.date_posted, user.username
         FROM review
         INNER JOIN collection_review ON review.review_id = collection_review.review_id
         INNER JOIN user ON review.user_id = user.user_id
-        WHERE collection_review.collection_id = ? LIMIT 3;
+        WHERE collection_review.collection_id = ?;
         
         SELECT collection_id FROM collection WHERE collection_id = ?;`;
 
@@ -207,14 +261,107 @@ app.get("/collection", function (req, res) {
     });
 });
 
+
+app.post('/collectionreview', (req, res) => {
+    
+    let title = req.body.title_field;
+    let comment = req.body.comment_field;
+    let rating = req.body.rating_field;
+    let current_date = new Date().toLocaleDateString('en-UK', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).split('/').reverse().join('-'); // format current date as YYYY-MM-DD to fit in database format
+   
+    let collection_id = url.parse(req.headers.referer, true).query.cid;
+
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id; 
+
+    let sqlinsert = `INSERT INTO review (review_id, user_id, rating, title, comment, date_posted)
+    VALUES (NULL, "${user_id}", "${rating}", "${title}", "${comment}", "${current_date}");
+
+    SET @last_id_in_review = LAST_INSERT_ID();
+    
+    INSERT INTO collection_review (collection_review_id, review_id, collection_id) VALUES (NULL, @last_id_in_review, "${collection_id}");`;
+
+    
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect(`/collection?cid=${collection_id}`);
+        
+    });
+});
+
+
+
 app.get("/register", function (req, res) {
     res.render('register');
+});
+
+
+app.post('/registeruser', (req, res) => {
+    
+    let firstname = req.body.firstname_field;
+    let lastname = req.body.lastname_field;
+    let username = req.body.username_field;
+    let email = req.body.email_field;
+    let password = req.body.password_field;
+
+
+    let sqlinsert = `INSERT INTO user (user_id, first_name, last_name, username, email, password)
+    VALUES (NULL, "${firstname}", "${lastname}", "${username}", "${email}", "${password}"); `;
+
+    
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect('loggedin_index');
+        
+    });
 });
 
 app.get("/login", function (req, res) {
     res.render('login');
 });
 
+app.get("/mycollections", function (req, res) {
+    res.render('user_collections');
+});
 
+app.post('/login', (req, res) => {
+    let username_field = req.body.usernameField;
+    let password_field = req.body.passwordField;
+
+    let checkuser = `SELECT * FROM user WHERE username = ? AND password = ?`;
+
+  
+    connection.query(checkuser, [username_field, password_field], (err, rows) => {
+
+      if (err) throw err;
+  
+      let numRows = rows.length;
+
+      if (numRows > 0) {
+        let sessionObj = req.session;  
+        sessionObj.user_id = rows[0].user_id;
+        sessionObj.sessValid = true;
+        //sessionObj.sessValid = rows[0].id; 
+        res.redirect('/home');
+      } else {
+        res.render('login');
+      }
+
+    });
+});
+
+// Add a route for handling logout
+app.get("/logout", (req, res) => {
+// Destroy session and redirect to login page
+req.session.destroy();
+res.redirect("/login");
+});
+  
 app.listen(process.env.PORT || 3000);
 console.log('Server is listening at https://localhost:3000/');

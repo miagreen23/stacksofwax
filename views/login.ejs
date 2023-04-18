@@ -16,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit-icons.min.js"></script>
 </head>
-<body>
+<body id="login_page_body">
     <%- include('header') %>
 
     <div class="uk-width-expand uk-background-muted">
@@ -42,7 +42,7 @@
         <div class="uk-flex uk-flex-center">
             <div class="uk-card uk-card-default uk-card-hover uk-card-body uk-width-large" style="margin-top: 60px; margin-bottom: 30px;">
                 <h3>Login</h3>
-                <form class="uk-form-stacked" action="" method="post">
+                <form class="uk-form-stacked" action="/login" method="POST">
                     <div class="uk-margin">
                         <label class="uk-form-label" for="username">
                             Username
@@ -50,7 +50,7 @@
                         <div class="uk-form-controls">
                             <div class="uk-inline uk-width-1-1">
                                 <a class="uk-form-icon uk-form-icon-flip" uk-tooltip="title: This field is required; pos: bottom-right"><i class="fas fa-info-circle"></i></a>
-                                <input class="uk-input" id="username" name="username" type="text">
+                                <input class="uk-input" name="usernameField" type="text">
                                 <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: user"></span> 
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                         <div class="uk-form-controls">
                             <div class="uk-inline uk-width-1-1">
                                 <a class="uk-form-icon uk-form-icon-flip" uk-tooltip="title: This field is required; pos: bottom-right"><i class="fas fa-info-circle"></i></a>
-                                <input class="uk-input" id="password" name="password" type="password">
+                                <input class="uk-input" name="passwordField" type="password">
                                 <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
                             </div>
                         </div>
@@ -79,10 +79,6 @@
                 
 
                 <div class="uk-text-center" style="margin-top: 20px;">
-                    <!--
-                    <div class="uk-text-left uk-display-inline">
-                        <a class="uk-link-reset uk-text-small" uk-toggle="target: #recover;animation: uk-animation-slide-top-small">Forgot your password?</a>
-                    </div>-->
                     <div class="uk-text-right uk-display-inline">
                     <a class="uk-link-reset uk-text-small uk-text-right" href="/register" uk-toggle="target: #recover;animation: uk-animation-slide-top-small">Create an Account</a>
                     </div>
