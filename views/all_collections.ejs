@@ -36,14 +36,20 @@
                         <div class="uk-width-1-4 uk-margin-small-top uk-width-expand if_small_screen">
                             <h5 class="uk-text-bold">GENRE:</h5>
                             <ul class="uk-subnav uk-subnav-pill uk-align-left">
-                                <li class="uk-warning" uk-filter-control id="active"><a href="#">View All</a></li>
-
-                                <% collection_data.forEach( (collection) => { %>
-                                    <li uk-filter-control=".tag-<%=collection.genre_type%>"><a href="#"><%=collection.genre_type%></a></li>
-                                <% }); %>
-
+                              <li class="uk-warning" uk-filter-control id="active"><a href="#">View All</a></li>
+                          
+                              <% let addedGenres = []; %>
+                              <% collection_data.forEach((collection) => {
+                                if (!addedGenres.includes(collection.genre_type)) {
+                                  addedGenres.push(collection.genre_type);
+                                  %>
+                                  <li uk-filter-control=".tag-<%= collection.genre_type %>"><a href="#"><%= collection.genre_type %></a></li>
+                                  <% 
+                                }
+                              }); %>
                             </ul>
-                        </div>
+                          </div>
+                          
 
 
                         <div class="uk-width-3-4" style="margin-left: 10px;">
@@ -53,7 +59,7 @@
                                     
                                     <% collection_data.forEach( (collection) => { %>
 
-                                        <li class="tag-<%= collection.genre_type %>">
+                                        <li class="tag-<%= collection.genre_type %>" style="margin-left: 10px;">
                                             <a href="/collection?cid=<%= collection.collection_id %>" class="collections_link">
                                                 
                                                 <dt><%= collection.collection_name %></dt>

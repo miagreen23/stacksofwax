@@ -413,13 +413,27 @@ body {
 #submit_button {
     background-color: #eb982b;
     padding: 7px 25px;
-    margin-left: 20px;
+    width: 50%;
+    margin-top: 20px;
     border: none;
     border-radius: 30px;
     color: white;
 }
 
 #submit_button:hover {
+    background-color: #dc8d26;
+}
+
+#addcollection_button {
+    background-color: #eb982b;
+    padding: 7px 25px;
+    width: 50%;
+    border: none;
+    border-radius: 30px;
+    color: white;
+}
+
+#addcollection_button:hover {
     background-color: #dc8d26;
 }
 
@@ -434,6 +448,15 @@ body {
 
 #close_button:hover {
     background-color:rgb(194, 194, 194);
+}
+
+#login_director{
+    color: #eb982b;
+}
+
+#login_director:hover{
+    text-decoration: none;
+    color: #dc8d26;
 }
 
 
@@ -537,6 +560,48 @@ body {
     margin-right: auto;
     margin-bottom: 40px;
 }
+
+.mycollectioncard {
+    background-color: white;
+    height: 300px;
+    width: 230px;
+    margin: 0px 8px 0px 8px;
+}
+
+.mycollectioncard h3 {
+    font-size: medium;
+    margin-top: 10px;
+    margin-bottom: 2px;
+}
+
+.mycollectioncardd .info {
+    margin-top: 5px;
+}
+
+.mycollectioncard p {
+    margin: 0px;
+    font-size: smaller;
+    color: #b3b3b3;
+}
+
+
+.mycollectioncard:hover {
+    scale: 1.02;
+}
+
+#new_collection_button{
+    background-color: #eb982b;
+    padding: 7px 25px;
+    border: none;
+    border-radius: 30px;
+    color: white;
+}
+
+#new_collection_button:hover{
+    background-color: #dc8d26;
+    text-decoration: none;
+}
+
 
 
 

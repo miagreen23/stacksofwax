@@ -97,6 +97,8 @@ app.get("/home", function (req, res) {
 app.get("/album", (req, res) => {
 
     let getid = req.query.bid;
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id; 
 
     let getrow = ` SELECT album.album_id, album.album_name, album.artist_name,
                     album.release_year, album.img_url FROM album WHERE album_id = ?;
@@ -111,23 +113,90 @@ app.get("/album", (req, res) => {
         FROM review
         INNER JOIN album_review ON review.review_id = album_review.review_id
         INNER JOIN user ON review.user_id = user.user_id
-        WHERE album_review.album_id = ? LIMIT 3 `;
+        WHERE album_review.album_id = ? LIMIT 3;
+        
+        SELECT collection_id, user_id, collection_name, collection_desc, main_genre_id
+        FROM collection
+        WHERE user_id = ?;
+        
+        SELECT genre_id, genre_type FROM genre;`;
             
 
-
-    connection.query(getrow, [getid, getid, getid, getid], (err, albumrow)=>{  
+    connection.query(getrow, [getid, getid, getid, getid, user_id], (err, albumrow)=>{  
         if(err) throw err;
 
         let album_details = albumrow[0];
         let record_label_details = albumrow[1]; 
         let track_details = albumrow[2];
         let review_details = albumrow[3];
+        let all_user_collections = albumrow[4];
+        let all_genres = albumrow[5];
         
-
-        res.render('album', {album_details, record_label_details, track_details, review_details});
+        res.render('album', {album_details, record_label_details, track_details, review_details, all_user_collections, all_genres});
     });
 });
 
+
+app.post('/add_to_existing_collection', (req, res) => {
+    
+    let existing_collection_id = req.body.existing_collection_field;
+    let album_id = url.parse(req.headers.referer, true).query.bid;
+
+    let sqlinsert = `INSERT INTO album_collection (album_collection_id, collection_id, album_id)
+    VALUES (NULL, "${existing_collection_id}", "${album_id}");`;
+   
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect(`/mycollections`);
+    });
+});
+
+
+app.post('/create_new_collection', (req, res) => {
+    
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id; 
+    let title = req.body.title_field;
+    let desc = req.body.description_field;
+    let genre_id = req.body.genre_field;
+
+    let sqlinsert = `INSERT INTO collection (collection_id, user_id, collection_name, collection_desc, main_genre_id)
+    VALUES (NULL, "${user_id}", "${title}", "${desc}", "${title}");`;
+   
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect(`/mycollections`);
+    });
+});
+
+
+
+app.post('/add_to_new_collection', (req, res) => {
+    
+    let album_id = url.parse(req.headers.referer, true).query.bid;
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id; 
+    let title = req.body.title_field;
+    let desc = req.body.description_field;
+    let genre_id = req.body.genre_field;
+
+    let sqlinsert = `INSERT INTO collection (collection_id, user_id, collection_name, collection_desc, main_genre_id)
+    VALUES (NULL, "${user_id}", "${title}", "${desc}", "${genre_id}");
+    
+    SET @last_id_in_collection = LAST_INSERT_ID();
+    
+    INSERT INTO album_collection (album_collection_id, collection_id, album_id)
+    VALUES (NULL, @last_id_in_collection, "${album_id}");`;
+    
+   
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect(`/mycollections`);
+    });
+});
 
 
 app.post('/albumreview', (req, res) => {
@@ -161,8 +230,6 @@ app.post('/albumreview', (req, res) => {
         
     });
 });
-
-
 
 
 app.get("/allalbums", (req, res) => {
@@ -210,9 +277,9 @@ app.get("/allcollections", (req, res) => {
     INNER JOIN genre g ON c.main_genre_id = g.genre_id
     GROUP BY c.collection_id;
                 
-    SELECT genre_type FROM genre WHERE genre_ID IN (
-        SELECT genre_ID FROM album_genre WHERE album_id IN (
-            SELECT album_ID FROM album_collection WHERE collection_id = ?));`;
+    SELECT DISTINCT genre_type FROM genre WHERE genre_ID IN (
+    SELECT genre_ID FROM album_genre WHERE album_id IN (
+        SELECT album_ID FROM album_collection WHERE collection_id = ?));`;
 
     connection.query(read, [getid], (err, data)=>{
         if(err) throw err;
@@ -327,8 +394,55 @@ app.get("/login", function (req, res) {
 });
 
 app.get("/mycollections", function (req, res) {
-    res.render('user_collections');
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id;
+
+    let readCollections = `SELECT collection_id, user_id, collection_name, collection_desc, main_genre_id
+        FROM collection WHERE user_id = ?;`;
+
+    connection.query(readCollections, [user_id], (err, collectionRows) => {
+        if (err) throw err;
+
+        let user_collections = collectionRows;
+        let numCollections = user_collections.length;
+        let counter = 0;
+
+        user_collections.forEach((collection, index) => {
+            let collection_id = collection.collection_id;
+
+            let readAlbums = `SELECT album.album_id, album.record_label_id, album.album_name, album.artist_name, album.release_year, album.img_url
+                FROM album
+                INNER JOIN album_collection ON album.album_id = album_collection.album_id
+                WHERE album_collection.collection_id = ?;`;
+
+            connection.query(readAlbums, [collection_id], (err, albumRows) => {
+                if (err) throw err;
+
+                user_collections[index].albums = albumRows;
+
+                let readGenre = `SELECT genre.genre_type
+                FROM collection
+                JOIN genre ON collection.main_genre_id = genre.genre_id
+                WHERE collection.collection_id = ?;`;
+
+                connection.query(readGenre, [collection_id], (err, genreRow) => {
+                    if (err) throw err;
+
+                    user_collections[index].main_genre_id = genreRow[0].main_genre_id;
+
+                    counter++;
+
+                    if (counter === numCollections) {
+                        res.render('user_collections', {user_collections});
+                    }
+                });
+            });
+        });
+    });
 });
+
+  
+
 
 app.post('/login', (req, res) => {
     let username_field = req.body.usernameField;
@@ -358,9 +472,9 @@ app.post('/login', (req, res) => {
 
 // Add a route for handling logout
 app.get("/logout", (req, res) => {
-// Destroy session and redirect to login page
-req.session.destroy();
-res.redirect("/login");
+    // Destroy session and redirect to login page
+    req.session.destroy();
+    res.redirect("/login");
 });
   
 app.listen(process.env.PORT || 3000);

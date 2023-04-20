@@ -25,73 +25,88 @@
         <div class="uk-container uk-container-center">
 
             <div class="uk-margin-medium-top">
-                <h1 class="uk-text-bold" style="font-size: 2.4em;">My Collections</h1>
+                <h1 class="uk-text-bold" style="font-size: 2.4em; float: left;">My Collections</h1>
+                <button class="uk-align-right uk-text-default" id="new_collection_button" uk-toggle="target: #create_new_collection_modal">Create New</button>
             </div>
 
-            <div class="uk-grid" style="height: 200px; width: 100%; background-color: pink;"> 
-                
-                <div uk-slider>
+        </div>
 
-                    <div class="uk-position-relative">
-                
-                        <div class="uk-slider-container uk-light">
-                            <ul class="uk-slider-items uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m">
-                                <li class="uk-width-1-4@m uk-width-1-3@s uk-width-1-4@l uk-card uk-card-body uk-padding-remove" style="margin: 15px 20px;">
-                                    <div class="uk-card uk-card-hover" style="background-color: white;">
-                                        <div>
-                                            <img src="stickseason.jpg" width="" height="" alt="">
-                                        </div>
-                                        
-                                        <div class="uk-card-body uk-padding-small uk-text-left">
-                                            <h4 class="uk-card-title uk-text-default uk-text-bold">Amy's Collection</h4>
-                                            <p class="uk-text-default">The top pop-rock stuff of all time</p>
-                                        </div>
-                                        <div class="uk-card-footer uk-padding-small" style="padding-top: 2px;">
-                                            <p class="uk-text-muted uk-text-italic uk-text-light" style="margin: 2px;">username</p>
+        <div id="create_new_collection_modal" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body">
+              <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
+
+              <h2 class="uk-modal-title">Create Collection</h2>
+              <form action="/create_new_collection" method="POST">
+
+                <div class="uk-form-row" style="margin-top: 10px;">
+                  <label for="new_collection" style="margin-right: 10px;">Create a new collection:</label>
+                  <input name="title_field" class="uk-input" type="text" placeholder="Collection Title" style="margin-bottom: 5px; margin-top: 5px;">
+                </div>
+                <div class="uk-form-row" style="margin-bottom: 2px;">
+                  <textarea class="uk-textarea" rows="5" name="description_field" placeholder="Collection Description" style="margin-bottom:10px;" required></textarea>
+                </div>
+                <div class="uk-form-row" style="margin-bottom: 60px;">
+                  <select name="genre_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 20px 0px; width: 100%;" required>
+                    <option value="" selected>Select main genre...</option>
+              
+                    <option value=""></option>
+            
+                  </select>
+                </div>
+                <!-- Button -->
+                <button type="submit" class="uk-text-default uk-position-bottom-center uk-margin-medium-top uk-margin-medium-bottom" id="addcollection_button">Submit</button>
+
+              </form>
+            </div>
+        </div>
+
+
+    <% user_collections.forEach(collection => { %>
+        <div uk-slider style="background-color: #2f2f2f; margin-top: 20px; margin-bottom: 20px;">
+
+                <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider>
+                    
+                        <div class="uk-margin-medium-top"><h3 class="uk-margin-medium-left uk-text-bold" style="display:inline"><%= collection.collection_name %></h3><p class="uk-text-italic" style="display: inline; margin-left: 10px; color: #eb982b;">Edit</p></div>
+                        <div class="uk-margin-small-top uk-margin-small-bottom"><p class="uk-margin-medium-left" style="display: inline;"><%= collection.collection_desc %></p><p class="uk-text-italic" style="display: inline; margin-left: 10px; color: #eb982b;">Edit</p></div>
+                       
+                        <ul uk-grid class="uk-slider-items uk-grid uk-width-1-5@m uk-width-1-5@s uk-width-1-5" style="margin-left: 0px;">
+                            <% collection.albums.forEach(album => { %>
+                                <li style="margin-bottom: 40px;">
+                                    <div class="mycollectioncard uk-card-hover" style="margin: 20px 2px 0px 2px;">
+                                        <div class="uk-card-body" style="padding: 20px;">
+                                            <div class="imagebox">
+                                                <a href="/album?bid=<%= album.album_id %>"><img src="<%= album.img_url %>"></a>
+                                            </div>
+                                           
+                                                <div class="uk-width">
+                                                    <div class="uk-card-title">
+                                                        <h3 class="uk-text-bolder" style="color: #1E1E1E;"><%= album.album_name %></h3>
+                                                        <div class="info uk-text-meta uk-text-bold uk-text-uppercase">
+                                                            <p><%= album.artist_name %></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="uk-position-bottom-right uk-margin-small-bottom uk-margin-small-right">
+                                                        <a href="" class="brandiconhover" uk-icon="icon: trash; ratio: 1" style="color: #eb982b;; float: left; margin: 1.5px;" uk-tooltip="title: Remove; pos: top-left"></a>
+                                                    </div>
+                                                </div>
+                                                
+                                           
                                         </div>
                                     </div>
                                 </li>
-                            </ul>
-                        </div>
-                
-                        <div class="uk-hidden@s uk-light">
-                            <a class="uk-position-center-left uk-position-small" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-                            <a class="uk-position-center-right uk-position-small" href="#" uk-slidenav-next uk-slider-item="next"></a>
-                        </div>
-                
-                        <div class="uk-visible@s">
-                            <a class="uk-position-center-left-out uk-position-small" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-                            <a class="uk-position-center-right-out uk-position-small" href="#" uk-slidenav-next uk-slider-item="next"></a>
-                        </div>
-                
-                    </div>
-                
-                    <ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
-                
-                </div>
-
-
-
-
-
-
-    
-                    
-
-                    
+                            <% }); %>
+                            
+                        </ul>
+                   
+                        <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+                        <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+                </div> 
             
-
-                    
-                
-                    
-                    
-                    
-           
-               
         
-            </div>
       
+            
         </div>
+    <% }); %>
 </div>
 
 
@@ -105,3 +120,21 @@
 
 </body>
 </html>
+
+
+
+<!--<li class="uk-width-1-4@m uk-width-1-3@s uk-width-1-4@l uk-card uk-card-body uk-padding-remove" style="margin: 15px 20px;">
+    <div class="uk-card uk-card-hover" style="background-color: white;">
+        <div>
+            <img src="stickseason.jpg" width="" height="" alt="">
+        </div>
+        
+        <div class="uk-card-body uk-padding-small uk-text-left">
+            <h4 class="uk-card-title uk-text-default uk-text-bold">Amy's Collection</h4>
+            <p class="uk-text-default">The top pop-rock stuff of all time</p>
+        </div>
+        <div class="uk-card-footer uk-padding-small" style="padding-top: 2px;">
+            <p class="uk-text-muted uk-text-italic uk-text-light" style="margin: 2px;">username</p>
+        </div>
+    </div>
+</li>-->
