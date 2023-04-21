@@ -30,14 +30,17 @@
 
            
 
-            <div class="uk-align-right uk-margin-medium-top">
+            <!--<div class="uk-align-right uk-margin-medium-top">
                 <% collection_details.forEach((collection) => { %>
+                  <% let collection_id = collection.collection_id; %>
+                    <% if (collection.collection_name == null) { %> 
+                    <% collection_id++ } %>
                     <span><a href="/collection?cid=<%=collection.collection_id - 1%>" class="uk-icon-button" uk-icon="chevron-left"
                         <% if (collection.collection_id <= 1) { %>onclick="event.preventDefault();" <% } %>></a></span>
                     <span><a href="/collection?cid=<%=collection.collection_id + 1%>" class="uk-icon-button" uk-icon="chevron-right"
                         <% if (collection.collection_id >= collection) { %>onclick="event.preventDefault();" <% } %>></a></span>
                 <% }); %>
-            </div>
+            </div>-->
             
 
             <div class="uk-margin-medium-top">

@@ -69,29 +69,12 @@ app.get("/home", function (req, res) {
         let top_albums = albumdata[0];
         let album_genre_id = albumdata[1];
         
-        res.render('loggedin_index', {top_albums, album_genre_id});
+        res.render('index', {top_albums, album_genre_id});
     });
 });
 
 
-app.get("/home", function (req, res) {
-    let getid = req.query.bid;
-   
-    let read = `SELECT album_id, img_url FROM album LIMIT 9;
 
-    SELECT album_id, album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
-        SELECT album_id FROM album_genre WHERE genre_id = 2) LIMIT 10;`; 
-   
-
-     connection.query(read, [getid, getid], (err, albumdata)=>{
-        if(err) throw err;
-
-        let top_albums = albumdata[0];
-        let album_genre_id = albumdata[1];
-        
-        res.render('anon_index', {top_albums, album_genre_id});
-    });
-});
 
 
 app.get("/album", (req, res) => {
@@ -162,7 +145,7 @@ app.post('/create_new_collection', (req, res) => {
     let genre_id = req.body.genre_field;
 
     let sqlinsert = `INSERT INTO collection (collection_id, user_id, collection_name, collection_desc, main_genre_id)
-    VALUES (NULL, "${user_id}", "${title}", "${desc}", "${title}");`;
+    VALUES (NULL, "${user_id}", "${title}", "${desc}", "${genre_id}");`;
    
     connection.query(sqlinsert, (err, data) => {
         if (err) throw err;
@@ -170,7 +153,6 @@ app.post('/create_new_collection', (req, res) => {
         res.redirect(`/mycollections`);
     });
 });
-
 
 
 app.post('/add_to_new_collection', (req, res) => {
@@ -191,6 +173,20 @@ app.post('/add_to_new_collection', (req, res) => {
     VALUES (NULL, @last_id_in_collection, "${album_id}");`;
     
    
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect(`/mycollections`);
+    });
+});
+
+
+app.post('/remove_from_collection', (req, res) => {
+
+    let album_id = 
+
+    let sqldelete = `DELETE FROM album_collection WHERE album_id = ? AND collection_id = ?;`;
+    
     connection.query(sqlinsert, (err, data) => {
         if (err) throw err;
         
@@ -364,30 +360,58 @@ app.post('/collectionreview', (req, res) => {
 
 
 app.get("/register", function (req, res) {
-    res.render('register');
-});
+    let read = `SELECT username FROM user;`;
 
+    connection.query(read, (err, row) => {  
+        if(err) throw err;
 
-app.post('/registeruser', (req, res) => {
-    
-    let firstname = req.body.firstname_field;
-    let lastname = req.body.lastname_field;
-    let username = req.body.username_field;
-    let email = req.body.email_field;
-    let password = req.body.password_field;
+        let usernames = row.map(user => user.username); // extract an array of usernames
 
+        // check if username is already taken
+        let usernameTaken = false;
+        if (req.query.username && usernames.includes(req.query.username)) {
+            usernameTaken = true;
+        }
 
-    let sqlinsert = `INSERT INTO user (user_id, first_name, last_name, username, email, password)
-    VALUES (NULL, "${firstname}", "${lastname}", "${username}", "${email}", "${password}"); `;
-
-    
-    connection.query(sqlinsert, (err, data) => {
-        if (err) throw err;
-        
-        res.redirect('loggedin_index');
-        
+        res.render('register', { usernames, usernameTaken } );
     });
 });
+
+
+
+
+app.post('/registeruser', async (req, res) => {
+    try {
+      const firstname = req.body.firstname_field;
+      const lastname = req.body.lastname_field;
+      const username = req.body.username_field;
+      const email = req.body.email_field;
+      const plaintextPassword = req.body.password_field;
+  
+      // generate the salt 
+      const saltRounds = 10;
+      const salt = await bcrypt.genSalt(saltRounds);
+  
+      // hash the password
+      const hashedPassword = await bcrypt.hash(plaintextPassword, salt);
+  
+      // insert user with hashed password
+      const sqlinsert = `INSERT INTO user (user_id, first_name, last_name, username, email, password)
+        VALUES (NULL, "${firstname}", "${lastname}", "${username}", "${email}", "${hashedPassword}");`;
+  
+      connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+       
+        let sessionObj = req.session;
+        req.session.sessValid = true;
+
+        res.redirect('/');
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server error');
+    }
+  });
 
 app.get("/login", function (req, res) {
     res.render('login');
@@ -398,14 +422,23 @@ app.get("/mycollections", function (req, res) {
     let user_id = sessionObj.user_id;
 
     let readCollections = `SELECT collection_id, user_id, collection_name, collection_desc, main_genre_id
-        FROM collection WHERE user_id = ?;`;
+        FROM collection WHERE user_id = ?;
+
+    SELECT genre_id, genre_type FROM genre;`;
 
     connection.query(readCollections, [user_id], (err, collectionRows) => {
         if (err) throw err;
 
-        let user_collections = collectionRows;
+        let user_collections = collectionRows[0];
+
+        if (user_collections.length === 0) {
+            res.render('user_collections', { user_collections: [], all_genres: collectionRows[1] });
+            return;
+        }
+
         let numCollections = user_collections.length;
         let counter = 0;
+        let all_genres = collectionRows[1];
 
         user_collections.forEach((collection, index) => {
             let collection_id = collection.collection_id;
@@ -433,42 +466,90 @@ app.get("/mycollections", function (req, res) {
                     counter++;
 
                     if (counter === numCollections) {
-                        res.render('user_collections', {user_collections});
+                        res.render('user_collections', { user_collections, all_genres });
                     }
                 });
+
             });
         });
     });
 });
 
-  
+
+
+
+app.post('/edit_title', (req, res) => {
+
+    let new_title = req.body.new_title_field;
+    let old_title_id = req.body.original_id_field;
+
+    let sqlinsert = `UPDATE collection SET collection_name = "${new_title}" WHERE collection_id = "${old_title_id}";`;
+    
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect('/mycollections');
+        
+    });
+});
+
+app.post('/edit_desc', (req, res) => {
+
+    let new_desc = req.body.new_desc_field;
+    let collection_id = req.body.original_id_field;
+
+    let sqlinsert = `UPDATE collection SET collection_desc = "${new_desc}" WHERE collection_id = "${collection_id}";`;
+    
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect('/mycollections');
+        
+    });
+});
 
 
 app.post('/login', (req, res) => {
-    let username_field = req.body.usernameField;
-    let password_field = req.body.passwordField;
-
-    let checkuser = `SELECT * FROM user WHERE username = ? AND password = ?`;
-
+    const username = req.body.usernameField;
+    const plaintextPassword = req.body.passwordField;
   
-    connection.query(checkuser, [username_field, password_field], (err, rows) => {
-
-      if (err) throw err;
-  
-      let numRows = rows.length;
-
-      if (numRows > 0) {
-        let sessionObj = req.session;  
-        sessionObj.user_id = rows[0].user_id;
-        sessionObj.sessValid = true;
-        //sessionObj.sessValid = rows[0].id; 
-        res.redirect('/home');
-      } else {
-        res.render('login');
+    const sqlSelect = 'SELECT * FROM user WHERE username = ?';
+    
+    connection.query(sqlSelect, [username], async (err, rows) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
       }
-
+  
+      if (rows.length === 0) {
+        // No user found with given username
+        return res.render('login');
+      }
+  
+      const hashedPassword = rows[0].password;
+  
+      try {
+        const passwordMatches = await bcrypt.compare(plaintextPassword, hashedPassword);
+        if (passwordMatches) {
+          // Passwords match, start session and redirect to home page
+          let sessionObj = req.session;  
+          sessionObj.user_id = rows[0].user_id;
+          sessionObj.sessValid = true;
+          return res.redirect('/home');
+        } else {
+          // Passwords don't match
+          return res.render('login');
+        }
+      } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+      }
     });
-});
+  });
+  
+  
+
+
 
 // Add a route for handling logout
 app.get("/logout", (req, res) => {

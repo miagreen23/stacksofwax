@@ -31,6 +31,7 @@
 
         </div>
 
+        <!-- MODAL FOR USER CREATING NEW COLLECTION -->
         <div id="create_new_collection_modal" uk-modal>
             <div class="uk-modal-dialog uk-modal-body">
               <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
@@ -48,9 +49,9 @@
                 <div class="uk-form-row" style="margin-bottom: 60px;">
                   <select name="genre_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 20px 0px; width: 100%;" required>
                     <option value="" selected>Select main genre...</option>
-              
-                    <option value=""></option>
-            
+                    <% all_genres.forEach(genre => { %>
+                    <option value="<%= genre.genre_id %>"><%= genre.genre_type %></option>
+                    <% }); %>
                   </select>
                 </div>
                 <!-- Button -->
@@ -62,14 +63,82 @@
 
 
     <% user_collections.forEach(collection => { %>
+
         <div uk-slider style="background-color: #2f2f2f; margin-top: 20px; margin-bottom: 20px;">
 
                 <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider>
                     
-                        <div class="uk-margin-medium-top"><h3 class="uk-margin-medium-left uk-text-bold" style="display:inline"><%= collection.collection_name %></h3><p class="uk-text-italic" style="display: inline; margin-left: 10px; color: #eb982b;">Edit</p></div>
-                        <div class="uk-margin-small-top uk-margin-small-bottom"><p class="uk-margin-medium-left" style="display: inline;"><%= collection.collection_desc %></p><p class="uk-text-italic" style="display: inline; margin-left: 10px; color: #eb982b;">Edit</p></div>
+                        <div class="uk-margin-medium-top"><h3 class="uk-margin-medium-left uk-text-bold" style="display:inline"><%= collection.collection_name %></h3><a href="#edit_title_modal" uk-toggle><p class="uk-text-italic" style="display: inline; margin-left: 10px; color: #eb982b;">Edit</p></a></div>
+                        <div class="uk-margin-small-top uk-margin-small-bottom"><p class="uk-margin-medium-left" style="display: inline;"><%= collection.collection_desc %></p><a href="#edit_desc_modal" uk-toggle><p class="uk-text-italic" style="display: inline; margin-left: 10px; color: #eb982b;">Edit</p></a></div>
                        
+                        <!--EDIT TITLE MODAL-->
+                        <div id="edit_title_modal" uk-modal>
+                            <div class="uk-modal-dialog uk-modal-body">
+                              <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
+                
+                              <h2 class="uk-modal-title">Edit Title</h2>
+                              <form action="/edit_title" method="POST">
+                                
+                                <div class="uk-form-row" style="margin-bottom: 20px;">
+                                    <label for="new_collection" style="margin-right: 10px;">Original Title</label>
+                                    <select name="original_id_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 5px 0px; width: 100%;" required>
+                                      <option value="" selected>Choose title to change...</option>
+                               
+                                      <option value="<%= collection.collection_id %>"><%= collection.collection_name %></option>
+                                
+                                    </select>
+                                  </div>
+                
+                                <div class="uk-form-row" style="margin-top: 0px; margin-bottom: 70px;">
+                                  <label for="new_collection" style="margin-right: 10px;">New Title</label>
+                                  <input name="new_title_field" class="uk-input" type="text" placeholder="Enter new title here..." style="margin-bottom: 5px; margin-top: 5px;">
+                                </div>
+                                <!-- Button -->
+                                <button type="submit" class="uk-text-default uk-position-bottom-center uk-margin-medium-top uk-margin-medium-bottom" id="addcollection_button">Submit</button>
+                
+                              </form>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        
+                        <!--EDIT DESCRIPTION MODAL-->
+                        <div id="edit_desc_modal" uk-modal>
+                            <div class="uk-modal-dialog uk-modal-body">
+                              <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
+                
+                              <h2 class="uk-modal-title">Edit Description</h2>
+                              <form action="/edit_desc" method="POST">
+                                
+                                <div class="uk-form-row" style="margin-bottom: 20px;">
+                                    <label for="new_collection" style="margin-right: 10px;">Collection to Edit</label>
+                                    <select name="original_id_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 5px 0px; width: 100%;" required>
+                                      <option value="" selected>Choose which collection to update...</option>
+                               
+                                      <option value="<%= collection.collection_id %>"><%= collection.collection_name %></option>
+                                
+                                    </select>
+                                  </div>
+                
+                                <div class="uk-form-row" style="margin-top: 0px; margin-bottom: 70px;">
+                                  <label for="new_collection" style="margin-right: 10px;">New Description</label>
+                                  <input name="new_desc_field" class="uk-input" type="text" placeholder="Enter new description here..." style="margin-bottom: 5px; margin-top: 5px;">
+                                </div>
+                                <!-- Button -->
+                                <button type="submit" class="uk-text-default uk-position-bottom-center uk-margin-medium-top uk-margin-medium-bottom" id="addcollection_button">Submit</button>
+                
+                              </form>
+                            </div>
+                        </div>
+                        
+                        
+                       
+                        
                         <ul uk-grid class="uk-slider-items uk-grid uk-width-1-5@m uk-width-1-5@s uk-width-1-5" style="margin-left: 0px;">
+                                    <% if (collection.albums.length === 0) { %>
+                                        <div style="margin-top: 10px; margin-left: 10px; margin-bottom: 30px;" class="uk-text-italic"><h3>No albums in this collection yet</h3></div>
+                                    <% } else { %>
                             <% collection.albums.forEach(album => { %>
                                 <li style="margin-bottom: 40px;">
                                     <div class="mycollectioncard uk-card-hover" style="margin: 20px 2px 0px 2px;">
@@ -95,24 +164,22 @@
                                     </div>
                                 </li>
                             <% }); %>
-                            
+  
                         </ul>
-                   
+                   <% } %>
+                   <% if (collection.albums.length > 0) { %>
                         <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
                         <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+                    <% } %>
                 </div> 
             
         
       
             
         </div>
+       
     <% }); %>
 </div>
-
-
-
-
-
 
     <%- include('filterbanner') %> 
 
@@ -120,21 +187,3 @@
 
 </body>
 </html>
-
-
-
-<!--<li class="uk-width-1-4@m uk-width-1-3@s uk-width-1-4@l uk-card uk-card-body uk-padding-remove" style="margin: 15px 20px;">
-    <div class="uk-card uk-card-hover" style="background-color: white;">
-        <div>
-            <img src="stickseason.jpg" width="" height="" alt="">
-        </div>
-        
-        <div class="uk-card-body uk-padding-small uk-text-left">
-            <h4 class="uk-card-title uk-text-default uk-text-bold">Amy's Collection</h4>
-            <p class="uk-text-default">The top pop-rock stuff of all time</p>
-        </div>
-        <div class="uk-card-footer uk-padding-small" style="padding-top: 2px;">
-            <p class="uk-text-muted uk-text-italic uk-text-light" style="margin: 2px;">username</p>
-        </div>
-    </div>
-</li>-->

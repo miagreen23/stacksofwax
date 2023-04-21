@@ -259,6 +259,10 @@ body {
     margin-right: 12px;
 }
 
+#card:hover {
+    scale: 1.02;
+}
+
 
 
 

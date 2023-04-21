@@ -19,17 +19,37 @@
     <script src="listeners.js"></script>
 </head>
 <body>
-    <%- include('header') %>
+    <% if (req.session.sessValid) { %>
 
-    <%- include('landing') %>
+        <%- include('header') %>
 
-    <%- include('albumgrids') %>
+        <%- include('landing') %>
 
-    <%- include('toppicks') %>
+        <%- include('albumgrids') %>
 
-    <%- include('filterbanner') %>
-        
-    <%- include('footer') %>
+        <%- include('toppicks') %>
+
+        <%- include('filterbanner') %>
+            
+        <%- include('footer') %>
+
+    <% } else { %>  
+
+        <%- include('header') %>
+
+        <%- include('landing') %>
+
+        <%- include('anonbanner') %>
+
+        <%- include('albumgrids') %>
+
+        <%- include('toppicks') %>
+
+        <%- include('filterbanner') %> 
+            
+        <%- include('footer') %>
+  
+    <% } %>  
   
 </body>
 </html>
