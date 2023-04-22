@@ -6,13 +6,17 @@ const url = require('url');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const sessions = require('express-session'); 
+const { reset } = require("nodemon");
+const { resolveSoa } = require("dns");
 const oneHour = 1000 * 60 * 60 * 1;
+const bodyParser = require('body-parser');
 
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'./public')));
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // middleware to set the req variable in response locals
 app.use(function(req, res, next) {
@@ -43,44 +47,204 @@ connection.connect((err)=>{
 });
 
 app.get("/", (req, res) => {
-    let sessionObj = req.session;
-
-    if(sessionObj.sessValid) {
-        res.redirect('home');
-    } else {
-        res.redirect('home');
-    }  
-  
+    res.redirect('home');
 });
 
 
 app.get("/home", function (req, res) {
-    let getid = req.query.bid;
-   
-    let read = `SELECT album_id, img_url FROM album LIMIT 9;
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id;
+    let read;
+  
+    if (user_id) {
+      // User is logged in, render queries with user-specific genre
+      let read_albums = `SELECT album_id, img_url FROM album LIMIT 9;`;
+  
+      // Check if user has any collections
+      let check_collections = `SELECT COUNT(*) as count FROM collection WHERE user_id = "${user_id}";`;
+  
+      connection.query(check_collections, (err, result) => {
+        if (err) throw err;
+  
+        let read_genre;
+        if (result[0].count > 0) {
+            // User has collections, fetch albums of the user's most chosen genre
+            read_genre = `SET @main_genre = COALESCE((
+              SELECT g.genre_id
+              FROM collection c
+              JOIN genre g ON c.main_genre_id = g.genre_id
+              WHERE c.user_id = "${user_id}"
+              GROUP BY c.main_genre_id
+              ORDER BY COUNT(*) DESC
+              LIMIT 1), 1);
+          
+              SELECT album_id, album_name, artist_name, release_year, img_url 
+              FROM album WHERE album_id IN (
+                SELECT album_id FROM album_genre WHERE genre_id = @main_genre) LIMIT 10;`;
+          } else {
+            // User has no collections, fetch albums of genre 1
+            read_genre = `SELECT album_id, album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
+              SELECT album_id FROM album_genre WHERE genre_id = 1) LIMIT 10;`;
+          }
+          
+  
+        read = read_albums + read_genre;
+  
+        connection.query(read, (err, albumdata) => {
+          if (err) throw err;
+  
+          let top_albums = albumdata[0]; //accesses first 9 albums in database
+          let album_genre_id = null;
+          let albums_by_genre = null;
+          if (result[0].count > 0) {
+            album_genre_id = albumdata[1];
+            albums_by_genre = albumdata[2]; //accesses all albums of the user's most chosen genre if they are logged in
+          } else {
+            // User has no collections, fetch albums of genre 1 for top picks
+            let read_top_picks = `SELECT album_id, album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
+              SELECT album_id FROM album_genre WHERE genre_id = 1) LIMIT 10;`;
+            connection.query(read_top_picks, (err, top_picks_data) => {
+              if (err) throw err;
+              top_albums = top_picks_data;
+            });
+          }
+  
+          res.render("index", { top_albums, album_genre_id, albums_by_genre });
+        });
+      });
+    } else {
+      // User is not logged in, render original queries
+      read = `SELECT album_id, img_url FROM album LIMIT 9;
+              SELECT album_id, album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
+                SELECT album_id FROM album_genre WHERE genre_id = 1) LIMIT 10;`;
+  
+      connection.query(read, (err, albumdata) => {
+        if (err) throw err;
+  
+        let top_albums = albumdata[0]; //accesses first 9 albums in database
+        let album_genre_id = albumdata[1];
+        let albums_by_genre = albumdata[2]; //accesses all albums of the user's most chosen genre if they are logged in
+  
+        res.render("index", { top_albums, album_genre_id, albums_by_genre });
+      });
+    }
+  });
+  
+  
+  
 
-    SELECT album_id, album_name, artist_name, release_year, img_url FROM album WHERE album_id IN (
-        SELECT album_id FROM album_genre WHERE genre_id = 1) LIMIT 10;`; 
+
+app.get("/myaccount", function (req, res) {
+    
+    //variables containing the user_id in the current session 
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id; 
+   
+    let read = `SELECT user_id, first_name, last_name, username, email FROM user WHERE user_id = ?;
+    
+    SELECT c.collection_id, c.user_id, c.collection_name, c.collection_desc, c.main_genre_id, g.genre_type
+    FROM collection c
+    INNER JOIN genre g ON c.main_genre_id = g.genre_id
+    WHERE c.user_id = ?;
+    
+    SELECT r.review_id, r.rating, r.title, r.comment, c.collection_name
+    FROM review r
+    INNER JOIN collection_review cr ON r.review_id = cr.review_id
+    INNER JOIN collection c ON cr.collection_id = c.collection_id
+    WHERE c.user_id = ?;`; 
    
 
-     connection.query(read, [getid, getid], (err, albumdata)=>{
+     connection.query(read, [user_id, user_id, user_id], (err, user)=>{
         if(err) throw err;
 
-        let top_albums = albumdata[0];
-        let album_genre_id = albumdata[1];
+        let user_data = user[0]; //variable containing all user details for current session user
+        let user_collections = user[1]; //variable containing all the collections each user has made
+        let collection_reviews = user[2]; //variable containing how many reviews each of the user's collections have
         
-        res.render('index', {top_albums, album_genre_id});
+        res.render('myaccount', {user_data, user_collections, collection_reviews});
+    });
+});
+
+app.post('/update_first_name', (req, res) => {
+
+    //variables containing the user_id in the current session 
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id; 
+
+    let new_first_name = req.body.first_name_field; //variable to capture the new first name
+
+    let sqlinsert = `UPDATE user SET first_name = "${new_first_name}" WHERE user_id = "${user_id}";`; //query to replace old first name with new one in database
+    
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect('/myaccount');  //after updating the first name, the user will be redirected back to their account page to see new details
+        
     });
 });
 
 
+app.post('/update_last_name', (req, res) => {
 
+    //variables containing the user_id in the current session 
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id; 
+
+    let new_first_name = req.body.last_name_field; //variable to capture the new last name
+
+    let sqlinsert = `UPDATE user SET last_name = "${new_last_name}" WHERE user_id = "${user_id}";`; //query to replace old last name with new one in database
+    
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect('/myaccount');  //after updating the last name, the user will be redirected back to their account page to see new details
+        
+    });
+});
+
+
+app.post('/update_username', (req, res) => {
+
+    //variables containing the user_id in the current session 
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id; 
+
+    let new_username = req.body.username_field; //variable to capture the new username
+
+    let sqlinsert = `UPDATE user SET username = "${new_username}" WHERE user_id = "${user_id}";`; //query to replace old username with new one in database
+    
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect('/myaccount');  //after updating the username, the user will be redirected back to their account page to see new details
+        
+    });
+});
+
+
+app.post('/update_email', (req, res) => {
+    
+    //variables containing the user_id in the current session   
+    let sessionObj = req.session;
+    let user_id = sessionObj.user_id; 
+
+    let new_email = req.body.email_field; //variable to capture the new email
+
+    let sqlinsert = `UPDATE user SET email = "${new_email}" WHERE user_id = "${user_id}";`; //query to replace old email with new one in database
+    
+    connection.query(sqlinsert, (err, data) => {
+        if (err) throw err;
+        
+        res.redirect('/myaccount'); //after updating the email, the user will be redirected back to their account page to see new details
+        
+    });
+});
 
 
 app.get("/album", (req, res) => {
 
-    let getid = req.query.bid;
-    let sessionObj = req.session;
+    let getid = req.query.bid; //variable containing the album id
+    let sessionObj = req.session; //variables containing the user_id in the current session
     let user_id = sessionObj.user_id; 
 
     let getrow = ` SELECT album.album_id, album.album_name, album.artist_name,
@@ -102,38 +266,55 @@ app.get("/album", (req, res) => {
         FROM collection
         WHERE user_id = ?;
         
-        SELECT genre_id, genre_type FROM genre;`;
+        SELECT genre_id, genre_type FROM genre;
+        
+        SELECT likes FROM album WHERE album_id = ?`;
             
 
-    connection.query(getrow, [getid, getid, getid, getid, user_id], (err, albumrow)=>{  
+    connection.query(getrow, [getid, getid, getid, getid, user_id, getid], (err, albumrow)=>{  
         if(err) throw err;
 
-        let album_details = albumrow[0];
-        let record_label_details = albumrow[1]; 
-        let track_details = albumrow[2];
-        let review_details = albumrow[3];
-        let all_user_collections = albumrow[4];
-        let all_genres = albumrow[5];
+        let album_details = albumrow[0]; //variable containing all details for each album
+        let record_label_details = albumrow[1]; //variable containing record label info
+        let track_details = albumrow[2]; //variable containing all tracks on each album
+        let review_details = albumrow[3]; //variable containing all reviews for each album
+        let all_user_collections = albumrow[4]; //variable containing all user's collections, to be used in "add to collection" modal
+        let all_genres = albumrow[5]; //variable containing all genres from genre table, to be used in "create new collection" modal
+        let total_likes = albumrow[6]; //variable containing total likes each album has received
         
-        res.render('album', {album_details, record_label_details, track_details, review_details, all_user_collections, all_genres});
+        res.render('album', {album_details, record_label_details, track_details, review_details, all_user_collections, all_genres, total_likes});
     });
 });
 
 
 app.post('/add_to_existing_collection', (req, res) => {
-    
-    let existing_collection_id = req.body.existing_collection_field;
-    let album_id = url.parse(req.headers.referer, true).query.bid;
 
-    let sqlinsert = `INSERT INTO album_collection (album_collection_id, collection_id, album_id)
-    VALUES (NULL, "${existing_collection_id}", "${album_id}");`;
-   
-    connection.query(sqlinsert, (err, data) => {
+    let album_id = url.parse(req.headers.referer, true).query.bid;
+    let existing_collection_id = req.body.existing_collection_field;
+
+    let checkSql = `SELECT COUNT(*) AS count FROM album_collection WHERE collection_id = "${existing_collection_id}" AND album_id = "${album_id}";`;
+
+    connection.query(checkSql, (err, result) => {
         if (err) throw err;
-        
-        res.redirect(`/mycollections`);
+       
+        if (result[0].count > 0) {
+            // if album_id already exists in the chosen collection, redirect to collections page
+            res.redirect(`/mycollections`);
+
+        } else {
+            // if album_id doesn't exist, insert it into album_collection table
+            let sqlinsert = `INSERT INTO album_collection (album_collection_id, collection_id, album_id)
+            VALUES (NULL, "${existing_collection_id}", "${album_id}");`;
+           
+            connection.query(sqlinsert, (err, data) => {
+                if (err) throw err;
+
+                res.redirect(`/mycollections`);
+            });
+        }
     });
 });
+
 
 
 app.post('/create_new_collection', (req, res) => {
@@ -183,11 +364,12 @@ app.post('/add_to_new_collection', (req, res) => {
 
 app.post('/remove_from_collection', (req, res) => {
 
-    let album_id = 
+    let album_id = req.body.album_id_field;
+    let collection_id = req.body.collection_id_field;
 
-    let sqldelete = `DELETE FROM album_collection WHERE album_id = ? AND collection_id = ?;`;
-    
-    connection.query(sqlinsert, (err, data) => {
+    let sqldelete = `DELETE FROM album_collection WHERE album_id = "${album_id}" AND collection_id = "${collection_id}";`;
+   
+    connection.query(sqldelete, (err, data) => {
         if (err) throw err;
         
         res.redirect(`/mycollections`);
@@ -224,6 +406,19 @@ app.post('/albumreview', (req, res) => {
         
         res.redirect(`/album?bid=${album_id}`);
         
+    });
+});
+
+app.post('/submit_like', (req, res) => {
+
+    let album_id = url.parse(req.headers.referer, true).query.bid;
+
+    let sqlinsert = `UPDATE album SET likes = likes + 1 WHERE album_id = ?;`;
+   
+    connection.query(sqlinsert, [album_id], (err, data) => {
+        if (err) throw err;
+        
+        res.redirect(`/album?bid=${album_id}`);
     });
 });
 
@@ -358,65 +553,6 @@ app.post('/collectionreview', (req, res) => {
 });
 
 
-
-app.get("/register", function (req, res) {
-    let read = `SELECT username FROM user;`;
-
-    connection.query(read, (err, row) => {  
-        if(err) throw err;
-
-        let usernames = row.map(user => user.username); // extract an array of usernames
-
-        // check if username is already taken
-        let usernameTaken = false;
-        if (req.query.username && usernames.includes(req.query.username)) {
-            usernameTaken = true;
-        }
-
-        res.render('register', { usernames, usernameTaken } );
-    });
-});
-
-
-
-
-app.post('/registeruser', async (req, res) => {
-    try {
-      const firstname = req.body.firstname_field;
-      const lastname = req.body.lastname_field;
-      const username = req.body.username_field;
-      const email = req.body.email_field;
-      const plaintextPassword = req.body.password_field;
-  
-      // generate the salt 
-      const saltRounds = 10;
-      const salt = await bcrypt.genSalt(saltRounds);
-  
-      // hash the password
-      const hashedPassword = await bcrypt.hash(plaintextPassword, salt);
-  
-      // insert user with hashed password
-      const sqlinsert = `INSERT INTO user (user_id, first_name, last_name, username, email, password)
-        VALUES (NULL, "${firstname}", "${lastname}", "${username}", "${email}", "${hashedPassword}");`;
-  
-      connection.query(sqlinsert, (err, data) => {
-        if (err) throw err;
-       
-        let sessionObj = req.session;
-        req.session.sessValid = true;
-
-        res.redirect('/');
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server error');
-    }
-  });
-
-app.get("/login", function (req, res) {
-    res.render('login');
-});
-
 app.get("/mycollections", function (req, res) {
     let sessionObj = req.session;
     let user_id = sessionObj.user_id;
@@ -476,6 +612,132 @@ app.get("/mycollections", function (req, res) {
 });
 
 
+app.get("/search", function (req, res) {
+    res.render('search', { sql_results: null, user: null, genre: null, artist: null });
+});
+
+app.post("/mysearch", function (req, res) {
+    let result = req.body.search_field;
+    
+    let artist_album_sql = `SELECT album_id, album_name, artist_name, release_year, img_url, likes
+    FROM album
+    WHERE artist_name LIKE '%${result}%'
+       OR album_name LIKE '%${result}%';`;
+
+    let user_sql = `SELECT user_id, username FROM user WHERE username LIKE '%${result}%';`;
+    let genre_sql = `SELECT a.album_id, a.album_name, a.artist_name, a.release_year, a.img_url, a.likes, g.genre_type
+                    FROM album a
+                    JOIN album_genre ag ON a.album_id = ag.album_id
+                    JOIN genre g ON ag.genre_id = g.genre_id
+                    WHERE g.genre_type LIKE '%pop%';`;
+    
+    let results = {};
+
+    connection.query(artist_album_sql, (err, artist_album) => {
+        if (err) throw err;
+        results.artist_album = artist_album;
+
+        connection.query(user_sql, (err, user) => {
+            if (err) throw err;
+            results.user = user;
+
+            connection.query(genre_sql, (err, genre) => {
+                if (err) throw err;
+                results.genre = genre;
+        
+                res.render('search_results', { results: results });
+            });
+            
+        });
+    
+    });
+        
+
+    
+});
+
+
+app.get("/test", function (req, res) {
+    res.render('test');
+});
+
+app.get("/register", function (req, res) {
+
+    let read = `SELECT username FROM user;`;
+
+    connection.query(read, (err, row) => {  
+        if(err) throw err;
+
+        let usernames = row.map(user => user.username); // extract an array of usernames
+
+        // check if username is already taken
+        let usernameTaken = false;
+        if (req.query.username && usernames.includes(req.query.username)) {
+            usernameTaken = true;
+        }
+
+        res.render('register', { usernames, usernameTaken} );
+
+    });
+});
+
+
+app.post('/register', (req, res) => {
+    try {
+      const firstname = req.body.firstname_field;
+      const lastname = req.body.lastname_field;
+      const username = req.body.username_field;
+      const email = req.body.email_field;
+      const plaintextPassword = req.body.password_field;
+  
+      // Check if username already exists
+      const sqlCheckUsername = `SELECT COUNT(*) AS usernameCount FROM user WHERE username = "${username}"`;
+      connection.query(sqlCheckUsername, (err, data) => {
+        if (err) throw err;
+  
+        const usernameCount = data[0].usernameCount;
+  
+        if (usernameCount > 0) {
+            res.redirect('/register/?m=Username already exists');
+
+        } else {
+          // generate the salt
+          const saltRounds = 10;
+          bcrypt.genSalt(saltRounds, (err, salt) => {
+            if (err) throw err;
+  
+            // hash the password
+            bcrypt.hash(plaintextPassword, salt, (err, hashedPassword) => {
+              if (err) throw err;
+  
+              // insert user with hashed password
+              const sqlinsert = `INSERT INTO user (user_id, first_name, last_name, username, email, password)
+                VALUES (NULL, "${firstname}", "${lastname}", "${username}", "${email}", "${hashedPassword}");`;
+  
+              connection.query(sqlinsert, (err, data) => {
+                if (err) throw err;
+  
+                let sessionObj = req.session;
+                req.session.sessValid = true;
+  
+                res.redirect('/login/?m=Registration Successful');
+              });
+            });
+          });
+        }
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server error');
+    }
+  });
+  
+
+app.get("/login", function (req, res) {
+    res.render('login');
+});
+
+
 
 
 app.post('/edit_title', (req, res) => {
@@ -515,7 +777,7 @@ app.post('/login', (req, res) => {
   
     const sqlSelect = 'SELECT * FROM user WHERE username = ?';
     
-    connection.query(sqlSelect, [username], async (err, rows) => {
+    connection.query(sqlSelect, [username], (err, rows) => {
       if (err) {
         console.error(err);
         return res.status(500).send('Server error');
@@ -528,8 +790,12 @@ app.post('/login', (req, res) => {
   
       const hashedPassword = rows[0].password;
   
-      try {
-        const passwordMatches = await bcrypt.compare(plaintextPassword, hashedPassword);
+      bcrypt.compare(plaintextPassword, hashedPassword, (err, passwordMatches) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send('Server error');
+        }
+  
         if (passwordMatches) {
           // Passwords match, start session and redirect to home page
           let sessionObj = req.session;  
@@ -540,12 +806,10 @@ app.post('/login', (req, res) => {
           // Passwords don't match
           return res.render('login');
         }
-      } catch (err) {
-        console.error(err);
-        return res.status(500).send('Server error');
-      }
+      });
     });
   });
+  
   
   
 

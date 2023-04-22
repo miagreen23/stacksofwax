@@ -181,6 +181,12 @@ body {
     width: 100%;
     margin-left: 10px;
     padding: 4px 0px 4px 0px;
+    text-decoration: none;
+}
+
+.hover_text:hover {
+    color: white;
+    text-decoration: none;
 }
 
 
@@ -255,12 +261,7 @@ body {
 
 
 .toppickscard .icons {
-    margin-bottom: 15px; 
-    margin-right: 12px;
-}
-
-#card:hover {
-    scale: 1.02;
+    margin-bottom: 20px; 
 }
 
 
@@ -463,6 +464,13 @@ body {
     color: #dc8d26;
 }
 
+.like-flex {
+    display: flex;
+    flex-direction: column;
+}
+  
+  
+
 
 /* collections page styling */
 #collections_page_body {
@@ -606,6 +614,27 @@ body {
     text-decoration: none;
 }
 
+#remove_button{
+    background-color: #eb982b;
+    color: white;
+    border-radius: 30px;
+}
+
+#remove_button:hover{
+    background-color: #dc8d26;
+}
+
+#cancel_button{
+    background-color: #e9e9e9;
+    color: rgb(224, 224, 224);
+    border-radius: 30px;
+    color: #1E1E1E;
+}
+
+#cancel_button:hover{
+    background-color:rgb(219, 219, 219);
+}
+
 
 
 
@@ -615,10 +644,81 @@ body {
 }
 
 
+
+
 /* register page styling */ 
 #register_page_body {
     background-color: rgb(255, 255, 255);
 }
+
+
+/* my account page styling */ 
+#my_account_body {
+    background-color: white;
+}
+
+.my_account_page {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
+    background-color: #F3F3F3;
+}
+
+#collection_list{
+    color: #1E1E1E;
+    display: inline-block;
+}
+
+#collection_list:hover{
+    color: #0e0e0e;
+    border-bottom: thin solid #eb982b;
+}
+
+.update_details_button {
+    height: 39px;
+    background-color: #eb982b;
+    color: white;
+    border: none;
+    font-size: medium;
+}
+
+.update_details_button:hover {
+    background-color: #dc8d26;
+}
+
+
+.browse_button {
+    background-color: #eb982b;
+    border-radius: 30px;
+    border: none;
+    padding: 10px 20px 10px 20px;
+    color: white;
+    font-size: medium;
+    margin-bottom: 30px;
+}
+
+.browse_button:hover {
+    background-color: #dc8d26;
+}
+
+
+
+
+/* search page styling */ 
+#search_body {
+    background-color: white;
+}
+
+.search_page {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
+    background-color: #F3F3F3;
+}
+
+
 
 
 /* additional screen sizes styling */ 

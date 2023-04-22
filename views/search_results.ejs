@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stacksofwax</title>
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="ui.css">
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/css/uikit.min.css" />
+
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit-icons.min.js"></script>
+   
+</head>
+<body id="search_body">
+
+<%- include('header') %>
+
+    <div class="search_page uk-margin-medium-bottom">
+
+        <div class="uk-container uk-container-center">
+            <button class="back_button uk-margin-medium-top uk-align-left">
+                <a href="/">
+                <span class="back_text">BACK</span></a>
+            </button>
+
+            <h1 class="uk-text-bold uk-text-center" style="font-size: 2.4em; padding-right: 80px; padding-bottom: 40px; border-bottom: thin solid rgb(194, 194, 194);">Search All</h1>           
+            
+            <!-- search_results.ejs -->
+
+                <h2>Albums and Artists:</h2>
+                <ul>
+                <% for (let i = 0; i < results.artist_album.length; i++) { %>
+                    <li><%= results.artist_album[i].artist_name %> - <%= results.artist_album[i].album_name %></li>
+                <% } %>
+                </ul>
+
+                <h2>Users:</h2>
+                <ul>
+                <% for (let i = 0; i < results.user.length; i++) { %>
+                    <li><%= results.user[i].username %></li>
+                <% } %>
+                </ul>
+
+                <h2>Genres:</h2>
+                <ul>
+                <% for (let i = 0; i < results.genre.length; i++) { %>
+                    <li><%= results.genre[i].genre_type %> - <%= results.genre[i].artist_name %> - <%= results.genre[i].album_name %></li>
+                <% } %>
+                </ul>
+
+            </div>
+            
+
+        </div>
+     
+    </div>
+
+    <%- include('filterbanner') %> 
+
+    <%- include('footer') %> 
+
+</body>
+</html>

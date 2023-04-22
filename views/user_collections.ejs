@@ -23,13 +23,21 @@
 <div class="user_collections_page">
 
         <div class="uk-container uk-container-center">
-
             <div class="uk-margin-medium-top">
                 <h1 class="uk-text-bold" style="font-size: 2.4em; float: left;">My Collections</h1>
                 <button class="uk-align-right uk-text-default" id="new_collection_button" uk-toggle="target: #create_new_collection_modal">Create New</button>
             </div>
-
         </div>
+
+        <div class="uk-container uk-container-center">
+        <% if (user_collections.length == 0) { %>
+          <div class="uk-margin-top-small">
+            <h3>You haven't made any collections yet.</h3>
+              <p>Why not browse through our albums to find inspiration?</p>
+              <a href="/allalbums"><button class="browse_button">Browse Albums</button></a>
+          </div>
+        <% } %>
+      </div>
 
         <!-- MODAL FOR USER CREATING NEW COLLECTION -->
         <div id="create_new_collection_modal" uk-modal>
@@ -63,14 +71,52 @@
 
 
     <% user_collections.forEach(collection => { %>
-
+    <div class="collection_value" data-collection-id="<%= collection.collection_id %>">
         <div uk-slider style="background-color: #2f2f2f; margin-top: 20px; margin-bottom: 20px;">
 
                 <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider>
                     
-                        <div class="uk-margin-medium-top"><h3 class="uk-margin-medium-left uk-text-bold" style="display:inline"><%= collection.collection_name %></h3><a href="#edit_title_modal" uk-toggle><p class="uk-text-italic" style="display: inline; margin-left: 10px; color: #eb982b;">Edit</p></a></div>
-                        <div class="uk-margin-small-top uk-margin-small-bottom"><p class="uk-margin-medium-left" style="display: inline;"><%= collection.collection_desc %></p><a href="#edit_desc_modal" uk-toggle><p class="uk-text-italic" style="display: inline; margin-left: 10px; color: #eb982b;">Edit</p></a></div>
-                       
+                        <div class="uk-margin-medium-top"><h3 class="uk-margin-medium-left uk-text-bold" style="display:inline"><%= collection.collection_name %></h3><a href="#edit_title_modal" uk-toggle uk-icon="icon: pencil; ratio: 1" style="color: #eb982b; margin-left: 5px;" uk-tooltip="title: Edit Title;"></a></div>
+                        <div class="uk-margin-small-top uk-margin-small-bottom"><p class="uk-margin-medium-left" style="display: inline;"><%= collection.collection_desc %></p><a href="#edit_desc_modal" uk-toggle uk-icon="icon: pencil; ratio: 1" style="color: #eb982b; margin-left: 5px;" uk-tooltip="title: Edit Description;"></a></div>
+                        <div class="uk-position-top-right uk-margin-small-bottom uk-margin-small-right">
+                          <a href="#delete" uk-toggle class="brandiconhover" uk-icon="icon: trash; ratio: 1" style="color: #eb982b; float: left; margin: 35px 30px 0px 0px;" uk-tooltip="title: Remove Album from Collection; pos: top-left"></a>
+                      </div>
+                      
+                      <!--REMOVE ALBUM FROM COLLECTION MODAL-->
+                      <div id="delete" uk-modal>
+                        <div class="uk-modal-dialog uk-modal-body">
+                            <h2 class="uk-modal-title">Remove Album from Collection</h2>
+                            <p>Please select which album you would like to remove:</p>
+
+                            <form action="/remove_from_collection" method="POST">
+                                
+                              <div class="uk-form-row" style="margin-bottom: 20px;">
+                                  <label for="new_collection" style="margin-right: 10px;">Collection</label>
+                                  <select name="collection_id_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 5px 0px; width: 100%;" required>
+                                    <option value="" selected>Choose collection...</option>
+                                      <option value="<%= collection.collection_id %>"><%= collection.collection_name %></option>
+                                  </select>
+                              </div>
+              
+                              <div class="uk-form-row" style="margin-top: 0px; margin-bottom: 70px;">
+                                <label for="new_collection" style="margin-right: 10px;">Album to Remove</label>
+                                <select name="album_id_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 5px 0px; width: 100%;" required>
+                                  <option value="" selected>Select Album...</option>
+                                  <% collection.albums.forEach(album => { %>
+                                  <option value="<%= album.album_id %>"><%= album.album_name %></option>
+                                  <% }); %>
+                                </select>
+                              </div>
+
+                              <p class="uk-text-right">
+                                  <button class="uk-button uk-modal-close" id="cancel_button" type="button">Cancel</button>
+                                  <button class="uk-button" id="remove_button" type="submit">Remove</button>
+                              </p>
+                          </form>
+                        </div>
+                      </div>
+
+
                         <!--EDIT TITLE MODAL-->
                         <div id="edit_title_modal" uk-modal>
                             <div class="uk-modal-dialog uk-modal-body">
@@ -154,12 +200,7 @@
                                                             <p><%= album.artist_name %></p>
                                                         </div>
                                                     </div>
-                                                    <div class="uk-position-bottom-right uk-margin-small-bottom uk-margin-small-right">
-                                                        <a href="" class="brandiconhover" uk-icon="icon: trash; ratio: 1" style="color: #eb982b;; float: left; margin: 1.5px;" uk-tooltip="title: Remove; pos: top-left"></a>
-                                                    </div>
-                                                </div>
-                                                
-                                           
+                                                </div> 
                                         </div>
                                     </div>
                                 </li>
@@ -177,7 +218,7 @@
       
             
         </div>
-       
+      </div>
     <% }); %>
 </div>
 
