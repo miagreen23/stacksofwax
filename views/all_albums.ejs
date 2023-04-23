@@ -39,6 +39,7 @@
                     <div class="uk-panel uk-panel-scrollable uk-margin-remove" style="height: 300px;">
                         
                         <ul class="uk-subnav uk-subnav-pill uk-align-left">
+                            <li class="uk-active" uk-filter-control><a href="#">View All</a></li>
                             <% results.genre_list.forEach((genre) => { %>
                                 <li uk-filter-control="[data-genre='<%=genre.genre_type%>']"><a href="#"><%=genre.genre_type%></a></li>
                             <% }); %>
@@ -49,7 +50,7 @@
                     <div class="uk-panel uk-panel-scrollable uk-margin-remove" style="height: 300px;">
                         
                         <ul class="uk-subnav uk-subnav-pill uk-align-left">
-                            <!--<li class="uk-warning" uk-filter-control><a href="#">View All</a></li>-->
+                            <li uk-filter-control><a href="#">View All</a></li>
                             <% results.artist_list.forEach((artist) => { %>
                                 <li uk-filter-control="[data-artist='<%=artist.artist_name%>']"><a href="#"><%=artist.artist_name%></a></li>
                             <% }); %>
