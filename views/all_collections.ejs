@@ -33,13 +33,13 @@
 
                 <div uk-grid uk-filter="target: .js-filter">
                     <div class="uk-grid">
-                        <div class="uk-width-1-4 uk-margin-small-top uk-width-expand if_small_screen">
+                        <div class="uk-width-1-4 uk-margin-small-top uk-width-expand if_small_screen">                  
                             <h5 class="uk-text-bold">GENRE:</h5>
                             <ul class="uk-subnav uk-subnav-pill uk-align-left">
                               <li class="uk-warning" uk-filter-control id="active"><a href="#">View All</a></li>
                           
                               <% let addedGenres = []; %>
-                              <% collection_data.forEach((collection) => {
+                              <% results.collection_details.forEach((collection) => {
                                 if (!addedGenres.includes(collection.genre_type)) {
                                   addedGenres.push(collection.genre_type);
                                   %>
@@ -48,16 +48,18 @@
                                 }
                               }); %>
                             </ul>
-                          </div>
+                            <h5 class="uk-text-bold uk-margin-medium-top">SEARCH:</h5>
+                            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by username..." style="width: 65%; height: 30px; border: thin solid rgb(222, 222, 222); background-color: #F3F3F3;">
+                        </div>
                           
 
 
                         <div class="uk-width-3-4" style="margin-left: 10px;">
                             <dl class="uk-description-list uk-description-list-divider">
-                                <ul class="js-filter uk-list uk-list-divider uk-margin-medium-top">
+                                <ul class="js-filter uk-list uk-list-divider uk-margin-medium-top" id="myUL">
                                     
                                     
-                                    <% collection_data.forEach( (collection) => { %>
+                                    <% results.collection_details.forEach( (collection) => { %>
 
                                         <li class="tag-<%= collection.genre_type %>" style="margin-left: 10px;">
                                             <a href="/collection?cid=<%= collection.collection_id %>" class="collections_link">
@@ -82,6 +84,28 @@
     <%- include('filterbanner') %> 
 
     <%- include('footer') %> 
+
+    <script>
+        function myFunction() {
+          // Declare variables
+          var input, filter, ul, li, a, i, txtValue;
+          input = document.getElementById('myInput');
+          filter = input.value.toUpperCase();
+          ul = document.getElementById("myUL");
+          li = ul.getElementsByTagName('li');
+        
+          // Loop through all list items, and hide those who don't match the search query
+          for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("a")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              li[i].style.display = "";
+            } else {
+              li[i].style.display = "none";
+            }
+          }
+        }
+        </script>
 
 </body>
 </html>

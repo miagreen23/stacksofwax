@@ -41,12 +41,7 @@
     <div class="uk-container">
         <div class="uk-flex uk-flex-center">
             <div class="uk-card uk-card-default uk-card-hover uk-card-body uk-width-large" style="margin-bottom: 30px;">
-                <% if (req.query.m) { %> 
-                    <div class="signup_complete">
-                        <%= req.query.m %>
-                        <a href="/login">Login</a>
-                    </div>
-                <% } %>
+        
                 <h3>Register for Account</h3>
                 <form class="uk-form-stacked" action="/register" method="POST">
                     <div class="uk-margin">

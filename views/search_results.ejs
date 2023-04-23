@@ -23,7 +23,7 @@
 
     <div class="search_page uk-margin-medium-bottom">
 
-        <div class="uk-container uk-container-center">
+        <div class="uk-container uk-container-center uk-margin-medium-bottom">
             <button class="back_button uk-margin-medium-top uk-align-left">
                 <a href="/">
                 <span class="back_text">BACK</span></a>
@@ -32,15 +32,21 @@
             <h1 class="uk-text-bold uk-text-center" style="font-size: 2.4em; padding-right: 80px; padding-bottom: 40px; border-bottom: thin solid rgb(194, 194, 194);">Search All</h1>           
             
             <!-- search_results.ejs -->
-
+            <div class="uk-margin-medium-bottom">
                 <h2>Albums and Artists:</h2>
+                <% if (results.artist_album.length == 0) { %>
+                    <p>No search results</p>
+                <% } %>
                 <ul>
                 <% for (let i = 0; i < results.artist_album.length; i++) { %>
-                    <li><%= results.artist_album[i].artist_name %> - <%= results.artist_album[i].album_name %></li>
+                   <li class="search_hover"><a href="/album?bid=<%= results.artist_album[i].album_id %>"><%= results.artist_album[i].artist_name %> - <%= results.artist_album[i].album_name %></a></li>
                 <% } %>
                 </ul>
 
                 <h2>Users:</h2>
+                <% if (results.user.length == 0) { %>
+                    <p>No search results</p>
+                <% } %>
                 <ul>
                 <% for (let i = 0; i < results.user.length; i++) { %>
                     <li><%= results.user[i].username %></li>
@@ -48,13 +54,16 @@
                 </ul>
 
                 <h2>Genres:</h2>
+                <% if (results.genre.length == 0) { %>
+                    <p>No search results</p>
+                <% } %>
                 <ul>
                 <% for (let i = 0; i < results.genre.length; i++) { %>
-                    <li><%= results.genre[i].genre_type %> - <%= results.genre[i].artist_name %> - <%= results.genre[i].album_name %></li>
+                    <li class="search_hover"><a href="/album?bid=<%= results.genre[i].album_id %>"><%= results.genre[i].genre_type %> - <%= results.genre[i].artist_name %> - <%= results.genre[i].album_name %></a></li>
                 <% } %>
                 </ul>
-
             </div>
+          
             
 
         </div>

@@ -22,9 +22,9 @@
                             
                             <li>
                                 <div class="uk-navbar-item">
-                                <form class="uk-search uk-search-navbar" style="width: 120px;">
+                                <form class="uk-search uk-search-navbar" style="width: 120px;" action="/mysearch" method="POST">
                                     <span uk-search-icon style="scale: 0.7;"></span>
-                                    <input class="uk-search-input" type="search" placeholder="SEARCH" aria-label="Search" style="font-size: 1.03em;">
+                                    <input class="uk-search-input" type="search" id="mysearch" name="search_field" placeholder="SEARCH" style="font-size: 1.03em;">
                                 </form>
                                 </div>
                             </li> 
@@ -55,8 +55,8 @@
     
                     <li class="uk-nav-header uk-margin-medium-top">ACCOUNT</li>
                     <li class="uk-parent"><a href="/mycollections"><span class="uk-margin-small-right" uk-icon="icon: list"></span>My Collections</a></li>
-                    <li class="uk-parent"><a href="/myaccount"><span class="uk-margin-small-right" uk-icon="icon: list"></span>My Account</a></li>
-                    <li class="uk-parent"><a href="/logout"><span class="uk-margin-small-right" uk-icon="icon: list"></span>Logout</a></li>
+                    <li class="uk-parent"><a href="/myaccount"><span class="uk-margin-small-right" uk-icon="icon: user"></span>My Account</a></li>
+                    <li class="uk-parent"><a href="/logout"><span class="uk-margin-small-right" uk-icon="icon: sign-out"></span>Logout</a></li>
     
             </ul>
         </div>
@@ -85,10 +85,10 @@
                                 
                                 <li>
                                     <div class="uk-navbar-item">
-                                    <form class="uk-search uk-search-navbar" style="width: 120px;">
-                                        <span uk-search-icon style="scale: 0.7;"></span>
-                                        <input class="uk-search-input" type="search" placeholder="SEARCH" aria-label="Search" style="font-size: 1.03em;">
-                                    </form>
+                                        <form class="uk-search uk-search-navbar" style="width: 120px;" action="/mysearch" method="POST">
+                                            <span uk-search-icon style="scale: 0.7;"></span>
+                                            <input class="uk-search-input" type="search" id="mysearch" name="search_field" placeholder="SEARCH" style="font-size: 1.03em;">
+                                        </form>
                                     </div>
                                 </li> 
         

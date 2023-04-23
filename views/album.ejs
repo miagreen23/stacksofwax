@@ -23,226 +23,273 @@
 
   <div class="album_page">
     <div class="uk-container">
-      <div class="uk-grid uk-margin-medium-top heading">
+          <div class="uk-grid uk-margin-medium-top heading">
 
-        <% album_details.forEach( (album)=> { %>
-        <div class="uk-width-2-3@s">
-          <div class="uk-text-bolder uk-text-secondary" style="font-size: 2.4em;">
-            <%= album.album_name %>
-          </div>
-          <div class="uk-text-bold uk-text-muted" style="font-size: 1.2em;">
-            <%= album.artist_name %>
-          </div>
-        </div>
+                <% results.album_details.forEach( (album)=> { %>
+                <div class="uk-width-2-3@s" id="if_title_small">
+
+                      <div class="uk-text-bolder uk-text-secondary" style="font-size: 2.4em;">
+                        <%= album.album_name %>
+                      </div>
+
+                      <div class="uk-text-bold uk-text-muted" style="font-size: 1.2em;">
+                        <%= album.artist_name %>
+                      </div>
+
+                </div>
 
 
-        <div class="uk-width-1-3@s like-container">
-          <div class="uk-text-right like-flex">
-            <form action="/submit_like" method="POST" class="uk-margin-small-bottom">
-              <button class="like_button" type="submit">
-                <img src="like.png" class="like_icon">
-                <span class="like_text uk-text-middle">LIKE</span>
-              </button>
-            </form>
-            <div class="uk-text-right" style="margin-right: 4px;"> 
-              <p class="uk-text-meta uk-text-bold">Liked By: <%= total_likes[0].likes %></p>
-            </div>
+                <div class="uk-width-1-3@s like-container" id="if_likes_small">
+                    <div class="uk-text-right like-flex">
+
+                        <form action="/submit_like" method="POST" class="uk-margin-small-bottom">
+                            <button class="like_button" type="submit">
+                                <img src="like.png" class="like_icon">
+                                <span class="like_text uk-text-middle">LIKE</span>
+                            </button>
+                        </form>
+
+                        <div class="uk-text-right" style="margin-right: 4px;">
+                            <p class="uk-text-meta uk-text-bold">Liked By: <%= results.total_likes[0].likes %></p>
+                        </div>
+                        
+                    </div>
+                </div>
           </div>
-        </div>
-        
-        
-        
-        
-        
-      </div>
 
 
       <div class="uk-grid main_track_area uk-margin-medium-top uk-margin-large-bottom">
 
         <div class="uk-width-1-3@s">
-          <div>
-            <img src="<%= album.img_url %>" class="album_image">
-          </div>
+              <div>
+                <img src="<%= album.img_url %>" class="album_image">
+              </div>
 
-          <div id="extras" class="uk-margin-medium-bottom">
-            <!--REAL ADD TO COLLECTION BUTTON ON ALBUM PAGE-->
-            <div class="hover_text uk-text-left link" style="margin-left: 0px;">
-              <button type="button" id="collection_button" uk-toggle="target: #add_to_collection_modal">
-                <span class="uk-icon-link; ratio: 1.5; brandiconhover" uk-icon="plus" style="color: white; margin-right: 6px;"></span>
-                <span class="whitetext uk-text-default uk-text-middle">Add to Collection</span>
-              </button>
-            </div>
+            <div id="extras" class="uk-margin-medium-bottom">
 
-            <!--Modal for users with collections already made-->
-            <div id="add_to_collection_modal" uk-modal>
-              <% if (req.session.sessValid) { %>
-              <div class="uk-modal-dialog uk-modal-body">
-                <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
+                    <!--ADD TO COLLECTION BUTTON-->
+                    <div class="hover_text uk-text-left link" style="margin-left: 0px;">
+                      <button type="button" id="collection_button" uk-toggle="target: #add_to_collection_modal">
+                        <span class="uk-icon-link; ratio: 1.5; brandiconhover" uk-icon="plus" style="color: white; margin-right: 6px;"></span>
+                        <span class="whitetext uk-text-default uk-text-middle">Add to Collection</span>
+                      </button>
+                    </div>
 
-                <h2 class="uk-modal-title">Add to Collection</h2>
+                      <!--START OF ADD TO COLLECTION MODAL-->
+                        <div id="add_to_collection_modal" uk-modal>
+                          <% if (req.session.sessValid) { %>
 
-                <% if (all_user_collections.length > 0) { %>
+                              <div class="uk-modal-dialog uk-modal-body">
+                                <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
 
-                <form action="/add_to_existing_collection" method="POST">
+                                <h2 class="uk-modal-title">Add to Collection</h2>
 
-                  <label for="rating" style="margin-right: 10px;">Add to existing collection:</label></br>
-                  <select name="existing_collection_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 80px 0px; width: 100%;" required>
-                    <option value="" selected>Select...</option>
-                    <% all_user_collections.forEach( (collection)=> { %>
-                    <option value="<%= collection.collection_id %>"><%= collection.collection_name %></option>
-                    <% });%>
-                  </select>
-                  <!-- Button -->
-                  <button type="submit" class="uk-text-default uk-position-bottom-center uk-margin-medium-top uk-margin-medium-bottom" id="addcollection_button">Submit</button>
-                </form>
+                                <% if (results.user_collections.length > 0) { %>
+
+                                <form action="/add_to_existing_collection" method="POST">
+
+                                  <label for="rating" style="margin-right: 10px;">Add to existing collection:</label></br>
+
+                                  <select name="existing_collection_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 80px 0px; width: 100%;" required>
+                                      <option value="" selected>Select...</option>
+                                      <% results.user_collections.forEach( (collection)=> { %>
+                                      <option value="<%= collection.collection_id %>"><%= collection.collection_name %></option>
+                                      <% });%>
+                                  </select>
+
+                                  <!-- Button -->
+                                  <button type="submit" class="uk-text-default uk-position-bottom-center uk-margin-medium-top uk-margin-medium-bottom" id="addcollection_button">Submit</button>
+
+                                </form>
+
+                                <% } else { %>
+
+                                <!--Modal for users with no existing collections yet-->
+                                <form action="/add_to_new_collection" method="POST">
+
+                                      <div class="uk-form-row" style="margin-top: 10px;">
+                                        <label for="new_collection" style="margin-right: 10px;">Create a new collection:</label>
+                                        <input name="title_field" class="uk-input" type="text" placeholder="Collection Title" style="margin-bottom: 5px; margin-top: 5px;">
+                                      </div>
+
+                                      <div class="uk-form-row" style="margin-bottom: 2px;">
+                                        <textarea class="uk-textarea" rows="5" name="description_field" placeholder="Collection Description" style="margin-bottom:10px;" required></textarea>
+                                      </div>
+
+                                      <div class="uk-form-row" style="margin-bottom: 60px;">
+                                        <select name="genre_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 20px 0px; width: 100%;" required>
+                                          <option value="" selected>Select main genre...</option>
+                                          <% results.genre_list.forEach( (genre)=> { %>
+                                          <option value="<%= genre.genre_id %>"><%= genre.genre_type %></option>
+                                          <% });%>
+                                        </select>
+                                      </div>
+
+                                    <!-- Button -->
+                                      <button type="submit" class="uk-text-default uk-position-bottom-center uk-margin-medium-top uk-margin-medium-bottom" id="addcollection_button">Submit</button>
+                                      <% } %>
+
+                                </form>
+                              </div> <!--end of modal for users with pre-existing collections-->
+
+                              <% } else { %>
+                              
+                                  <div class="uk-modal-dialog uk-modal-body">
+                                      <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
+                                      <h3>To create a collection, please <b><a href="/login" id="login_director">login</a></b></h3>
+                                  </div> <!--end of modal for non-logged-in users-->
+                        </div>
+                              <% } %>
+                        </div> 
+                        <!--END OF ADD TO COLLECTION MODAL-->
+
+
+                        <!-- BUTTON TO TOGGLE WRITE REVIEW MODAL -->
+                        <div class="hover_text uk-text-left link" style="margin-left: 0px;">
+                          <button uk-toggle="target: #write_review" type="button" class="review_button">
+                            <span class="uk-icon-link; ratio: 1.7; brandiconhover" uk-icon="pencil" style="color: white; margin-right: 6px;"></span>
+                            <span class="whitetext uk-text-default uk-text-middle">Review Album</span>
+                          </button>
+                        </div>
+
+              <!-- WRITE REVIEW MODAL -->
+              <div id="write_review" uk-modal>
+                <div class="uk-modal-dialog uk-modal-body">
+                  <% if (req.session.sessValid) { %>
+                  <% let hasLeftReview = false; %>
+
+                      <% console.log(hasLeftReview); %>
+
+                  <% if (hasLeftReview) { %>
+
+                          <!-- check if the current user has already left a review -->
+                          <%  for (var i = 0; i < results.album_reviews.length; i++) {
+                            // check if the current user_id matches the current session user_id
+                            if (results.album_reviews[i].user_id === results.current_session_user[0].user_id) {
+                              // found a match!
+                              hasLeftReview = true;
+                              break; // exit the loop since we've found a match
+                            }
+                        } %>
+
+                        <!-- display message that user has already left a review for this collection -->
+                     
+                          <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
+                          <h3>You have already reviewed this album.</h3>
+                 
+
+                  <% } else { %>
+                  
+                          <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
+
+                          <h2 class="uk-modal-title">Review Album</h2>
+                          <p>Please type your review below...</p>
+
+                          <form action="/albumreview" method="POST">
+
+                            <div class="uk-form-row">
+                              <input name="title_field" class="uk-input" type="text" placeholder="Title" style="margin-bottom: 5px;">
+                            </div>
+
+                            <div class="uk-form-row">
+                              <textarea class="uk-textarea" rows="5" name="comment_field" placeholder="Type your review here..." style="margin-bottom:10px;" required></textarea>
+                            </div>
+
+                            <div>
+                              <label for="rating" style="margin-right: 10px;">Rating:</label>
+                              <select name="rating_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin-bottom: 80px;" required>
+                                <option value="" selected>Select a rating…</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                              </select>
+                            </div>
+
+                            <!-- Button -->
+                            <div>
+                              <button type="submit" class="uk-text-default uk-position-bottom-center uk-margin-medium-top uk-margin-medium-bottom" id="submit_button">Submit</button>
+                            </div>
+                            <% } %>
+                          </form>
+                       
+                    </div> <!--END OF MODAL FOR LOGGED IN PEOPLE-->
 
                 <% } else { %>
 
-                <!--Modal for users with no existing collections yet-->
-                <form action="/add_to_new_collection" method="POST">
+                    
+                      <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
+                      <h3>To write a review, please <b><a href="/login" id="login_director">login</a></b></h3>
+                
 
-                  <div class="uk-form-row" style="margin-top: 10px;">
-                    <label for="new_collection" style="margin-right: 10px;">Create a new collection:</label>
-                    <input name="title_field" class="uk-input" type="text" placeholder="Collection Title" style="margin-bottom: 5px; margin-top: 5px;">
-                  </div>
-                  <div class="uk-form-row" style="margin-bottom: 2px;">
-                    <textarea class="uk-textarea" rows="5" name="description_field" placeholder="Collection Description" style="margin-bottom:10px;" required></textarea>
-                  </div>
-                  <div class="uk-form-row" style="margin-bottom: 60px;">
-                    <select name="genre_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 20px 0px; width: 100%;" required>
-                      <option value="" selected>Select main genre...</option>
-                      <% all_genres.forEach( (genre)=> { %>
-                      <option value="<%= genre.genre_id %>"><%= genre.genre_type %></option>
-                      <% });%>
-                    </select>
-                  </div>
-                  <!-- Button -->
-                  <button type="submit" class="uk-text-default uk-position-bottom-center uk-margin-medium-top uk-margin-medium-bottom" id="addcollection_button">Submit</button>
-
-                  <% } %>
-                </form>
-
-              </div>
-              <% } else { %>
-                <div class="uk-modal-dialog uk-modal-body">
-                  <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
-                  <h3>To create a collection, please <b><a href="/login" id="login_director">login</a></b></h3>
-                </div>
-              <% } %>
-            </div>
-
-
-            <!-- This is a button toggling the modal -->
-            <div class="hover_text uk-text-left link" style="margin-left: 0px;">
-              <button uk-toggle="target: #write_review" type="button" class="review_button">
-                <span class="uk-icon-link; ratio: 1.7; brandiconhover" uk-icon="pencil" style="color: white; margin-right: 6px;"></span>
-                <span class="whitetext uk-text-default uk-text-middle">Review Album</span>
-              </button>
-            </div>
-
-            <!-- This is the modal -->
-            <div id="write_review" uk-modal>
-              <% if (req.session.sessValid) { %>
-              <div class="uk-modal-dialog uk-modal-body">
-
-                <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
-
-                <h2 class="uk-modal-title">Review Album</h2>
-                <p>Please type your review below...</p>
-
-                <form action="/albumreview" method="POST">
-
-                  <div class="uk-form-row">
-                    <input name="title_field" class="uk-input" type="text" placeholder="Title" style="margin-bottom: 5px;">
-                  </div>
-                  <div class="uk-form-row">
-                    <textarea class="uk-textarea" rows="5" name="comment_field" placeholder="Type your review here..." style="margin-bottom:10px;" required></textarea>
-                  </div>
-                  <div>
-                    <label for="rating" style="margin-right: 10px;">Rating:</label>
-                    <select name="rating_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin-bottom: 80px;" required>
-                      <option value="" selected>Select a rating…</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                    </select>
-                  </div>
-                  <!-- Button -->
-                  <div>
-                    <button type="submit" class="uk-text-default uk-position-bottom-center uk-margin-medium-top uk-margin-medium-bottom" id="submit_button">Submit</button>
-                  </div>
-                </form>
-
-              </div>
-              <% } else { %>
-                <div class="uk-modal-dialog uk-modal-body">
-                  <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
-                  <h3>To write a review, please <b><a href="/login" id="login_director">login</a></b></h3>
-                </div>
-              <% } %>
-            </div>
-          </div>
-        </div> <!-- end of left side of box -->
-
+                <% } %>
+             
+              </div> <!--END OF WRITE REVIEW MODAL-->
+            </div> <!--END OF EXTRAS DIV-->
+        </div> <!--END OF WIDTH 1/3 DIV-->
+        
+        
+        <!-- end of left side of box -->
+        
 
         <div class="uk-width-2-3@s">
-          <% record_label_details.forEach( (album)=> { %>
-          <div>
-            <p style="margin-bottom: 5px;">
-              <b>Record Label:</b> <%= album.record_label_name %>
-            </p>
-          </div>
+          <% results.record_label.forEach( (album)=> { %>
+              <div>
+                  <p style="margin-bottom: 5px;">
+                    <b>Record Label:</b> <%= album.record_label_name %>
+                  </p>
+              </div>
           <% }); %>
 
 
-          <div>
-            <p style="margin-bottom: 5px;">
-              <b>Year of Release:</b> <%= album.release_year %>
-            </p>
-          </div>
-
-          <div class="tracklist" style="margin-top: 30px;">
-            <div class="uk-text-large uk-text-bold uk-text-secondary title" style="margin-bottom: 15px;">
-              Tracklist
+            <div>
+                <p style="margin-bottom: 5px;">
+                  <b>Year of Release:</b> <%= album.release_year %>
+                </p>
             </div>
 
-            <% track_details.forEach( (album)=> { 
+            <div class="tracklist" style="margin-top: 30px;">
+                <div class="uk-text-large uk-text-bold uk-text-secondary title" style="margin-bottom: 15px;">
+                  Tracklist
+                </div>
 
-            
-              const formatDuration = (duration) => {
-                let stringValue = duration.toString();
-                let parts = stringValue.split(".");
-                let decimalPart = parts[1];
-                if (decimalPart && decimalPart.length === 1) {
-                  decimalPart += "0"; // append zero if length is 1
-                }
-                let result = parts[0] + ":" + decimalPart;
-                return result;
-              }
-              
-            %>
+                <% results.tracklist.forEach( (album)=> { 
 
-            <div class="uk-grid" style="margin-top: 10px">
-              <div class="uk-width-1-3@s uk-text-bold uk-text-muted" id="track_position_on_album">
-                <%= album.track_position_on_album %>
-              </div>
+                    const formatDuration = (duration) => {
+                      let stringValue = duration.toString();
+                      let parts = stringValue.split(".");
+                      let decimalPart = parts[1];
 
-              <div class="uk-width-1-3@s uk-text-secondary" id="track_title">
-                <%= album.track_title %>
-              </div>
+                      if (decimalPart && decimalPart.length === 1) {
+                        decimalPart += "0"; // append zero if length is 1
+                      }
 
-              <div class="uk-width-1-3@s uk-text-muted" id="track_duration">
-                <%= formatDuration(album.duration) %>
-              </div>
-            </div>
+                      let result = parts[0] + ":" + decimalPart;
+                      return result;
+                    }
+                    
+                  %>
 
-            <% }); %>
+                  <div class="uk-grid" style="margin-top: 10px">
+                      <div class="uk-width-1-3@s uk-text-bold uk-text-muted" id="track_position_on_album">
+                        <%= album.track_position_on_album %>
+                      </div>
 
-          </div>
+                      <div class="uk-width-1-3@s uk-text-secondary" id="track_title">
+                        <%= album.track_title %>
+                      </div>
+
+                      <div class="uk-width-1-3@s uk-text-muted" id="track_duration">
+                        <%= formatDuration(album.duration) %>
+                      </div>
+                  </div>
+
+                <% }); %>
+
+              </div> 
         </div>
-
+       
         <% }); %>
       </div> <!-- end of main body, but not container -->
 
@@ -250,9 +297,9 @@
       <!-- REVIEW SECTION -->
       <% const ratings = [] %>
 
-      <% review_details.forEach(album => {
+      <% results.album_reviews.forEach(album => {
         ratings.push(album.rating);
-    }); %>
+      }); %>
 
       <% const sum = ratings.reduce((acc, curr) => acc + curr, 0) %>
       <% const averageRating = ratings.length > 0 ? (sum / ratings.length).toFixed(1) : 0 %>
@@ -260,85 +307,77 @@
 
 
       <div class="review_section uk-margin-large-bottom uk-margin-large-top" style="background-color: #ffffff;;">
-        <div class="uk-grid">
-          <div class="uk-width-1-2@s" id="if_reviews_small">
-            <div class="review_title uk-margin-medium-left uk-margin-medium-top uk-text-large uk-text-secondary">
-              <h1 style="font-weight: 600">Latest Reviews</h1>
+            <div class="uk-grid">
+                <div class="uk-width-1-2@s" id="if_reviews_small">
+                  <div class="review_title uk-margin-medium-left uk-margin-medium-top uk-text-large uk-text-secondary">
+                    <h1 style="font-weight: 600">Latest Reviews</h1>
 
+                  </div>
+                </div>
+
+                <div class="uk-width-1-2@s then_hide" id="if_reviews_small">
+                  <div class="star_rating uk-text-large uk-text-bolder uk-text-secondary uk-text-right uk-margin-medium-right uk-margin-medium-top">
+                    <h1><%= averageRating %> <img src="/Star.png" style="height: 40px; width: 40px; margin-bottom: 10px;"></h1>
+                  </div>
+
+                </div>
             </div>
-          </div>
-
-          <div class="uk-width-1-2@s then_hide" id="if_reviews_small">
-            <div class="star_rating uk-text-large uk-text-bolder uk-text-secondary uk-text-right uk-margin-medium-right uk-margin-medium-top">
-              <h1><%= averageRating %> <img src="/Star.png" style="height: 40px; width: 40px; margin-bottom: 10px;"></h1>
-            </div>
-
-          </div>
-        </div>
 
 
-        <% review_details.forEach( (album)=> { 
+            <% results.album_reviews.forEach( (album)=> { 
           
-          const options = {
-            weekday: 'long',
-            month:'long',
-            day:'2-digit',
-            year: 'numeric'
-          }
-          
-          let date = album.date_posted.toLocaleString('en-GB', options);
+              const options = {
+                weekday: 'long',
+                month:'long',
+                day:'2-digit',
+                year: 'numeric'
+              }
+              
+              let date = album.date_posted.toLocaleString('en-GB', options);
 
-        %>
+            %>
 
 
         <div class="review_title_and_rating uk-margin-medium-bottom">
-          <!-- start of one review -->
-          <div class="uk-grid">
-            <div class="uk-width-1-2@s uk-margin-medium-left" style="width: auto;">
-              <h2 class="uk-text-bold uk-text-large"><%= album.rating %> <img src="/Star.png" style="height: 25px; width: 25px; margin-bottom: 7px;"></h2>
+            <!-- start of one review -->
+            <div class="uk-grid">
+                <div class="uk-width-1-2@s uk-margin-medium-left" style="width: auto;">
+                    <h2 class="uk-text-bold uk-text-large"><%= album.rating %> <img src="/Star.png" style="height: 25px; width: 25px; margin-bottom: 7px;"></h2>
+                </div>
+
+                <div class="uk-width-1-2@s" style="width: 60%;">
+                    <h2 style="color: #eb982b;;" class="uk-text-bold uk-text-large">
+                      <%= album.title %>
+                    </h2>
+                </div>
             </div>
 
-            <div class="uk-width-1-2@s" style="width: 60%;">
-
-              <h2 style="color: #eb982b;;" class="uk-text-bold uk-text-large">
-                <%= album.title %>
-              </h2>
+            <div class="review_body uk-margin-small-top uk-margin-medium-left uk-margin-medium-right">
+                <p style="margin-bottom: 5px">
+                  <%= album.comment %>
+                </p>
             </div>
-          </div>
 
-          <div class="review_body uk-margin-small-top uk-margin-medium-left uk-margin-medium-right">
-            <p style="margin-bottom: 5px">
-              <%= album.comment %>
-            </p>
-          </div>
+              <div class="user_and_date">
+                    <div class="uk-grid uk-text-light uk-text-small uk-text-italic">
+                        <div class="uk-width-1-2@s uk-margin-medium-left" style="width: auto;">
+                          <p><%= album.username %></p>
+                        </div>
 
-          <div class="user_and_date">
-            <div class="uk-grid uk-text-light uk-text-small uk-text-italic">
-
-              <div class="uk-width-1-2@s uk-margin-medium-left" style="width: auto;">
-
-                <p><%= album.username %></p>
-
+                        <div class="uk-width-1-2@s" style="width: 60%;">
+                          <p><%= date %></p>
+                        </div>
+                    </div>
               </div>
-
-              <div class="uk-width-1-2@s" style="width: 60%;">
-                <p><%= date %></p>
-              </div>
-            </div>
-          </div>
         </div> <!-- end of one user's review-->
         <% }); %>
+       
         </br>
-
 
         <!--<div class="see_all_button uk-margin-medium-bottom">
               <button class="uk-button uk-button-default uk-margin-auto" style="border-radius: 30px; display: block;">SEE ALL</button>
               </br>
           </div>-->
-
-
-
-
 
       </div>
 

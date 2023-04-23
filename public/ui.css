@@ -719,6 +719,20 @@ body {
 }
 
 
+.search_hover{
+    text-decoration: none;
+}
+
+.search_hover a{
+    text-decoration: none;
+    color: #eb982b;
+}
+
+.search_hover a:hover{
+    text-decoration: none;
+    color: #dc8d26;
+}
+
 
 
 /* additional screen sizes styling */ 
@@ -789,6 +803,24 @@ body {
        float: left;
        width: 50%;
     }
+
+    #if_footer_small {
+        float: left;
+        width: 50%;
+     }
+
+     #if_likes_small {
+        float: left;
+        width: 50%;
+        padding-top: 20px;
+        padding-right: 20px;
+     }
+
+     #if_title_small {
+        float: left;
+        width: 50%;
+     }
+
 }
 
 

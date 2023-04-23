@@ -37,7 +37,7 @@
               <a href="/allalbums"><button class="browse_button">Browse Albums</button></a>
           </div>
         <% } %>
-      </div>
+        </div>
 
         <!-- MODAL FOR USER CREATING NEW COLLECTION -->
         <div id="create_new_collection_modal" uk-modal>
@@ -98,7 +98,7 @@
                                   </select>
                               </div>
               
-                              <div class="uk-form-row" style="margin-top: 0px; margin-bottom: 70px;">
+                              <div class="uk-form-row" style="margin-top: 0px; margin-bottom: 30px;">
                                 <label for="new_collection" style="margin-right: 10px;">Album to Remove</label>
                                 <select name="album_id_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 5px 0px; width: 100%;" required>
                                   <option value="" selected>Select Album...</option>
@@ -159,10 +159,10 @@
                                 
                                 <div class="uk-form-row" style="margin-bottom: 20px;">
                                     <label for="new_collection" style="margin-right: 10px;">Collection to Edit</label>
-                                    <select name="original_id_field" style="padding: 3px; border: thin solid rgb(204, 204, 204); color: gray; margin: 5px 0px 5px 0px; width: 100%;" required>
-                                      <option value="" selected>Choose which collection to update...</option>
+                                    <select name="original_id_field" style="padding: 3px; border: thin solid rgb(225, 225, 225); color: gray; margin: 5px 0px 5px 0px; width: 100%; height: 40px; font-size: medium; color: rgb(135, 135, 135);">
+                                      <option class="uk-text-large" value="" selected>Choose which collection to update...</option>
                                
-                                      <option value="<%= collection.collection_id %>"><%= collection.collection_name %></option>
+                                      <option class="uk-text-large" value="<%= collection.collection_id %>"><%= collection.collection_name %></option>
                                 
                                     </select>
                                   </div>
