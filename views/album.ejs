@@ -155,23 +155,23 @@
               <!-- WRITE REVIEW MODAL -->
               <div id="write_review" uk-modal>
                 <div class="uk-modal-dialog uk-modal-body">
-                  <% if (req.session.sessValid) { %>
                   <% let hasLeftReview = false; %>
+                  
+                  <% if (req.session.sessValid) { %>
 
-                      <% console.log(hasLeftReview); %>
+                     <!-- check if the current user has already left a review -->
+                   <%  for (var i = 0; i < results.album_reviews.length; i++) {
+                    // check if the current user_id matches the current session user_id
+                    if (results.album_reviews[i].user_id === results.current_session_user[0].user_id) {
+                      // found a match!
+                      hasLeftReview = true;
+                      break; // exit the loop since we've found a match
+                    }
+                    } %>
+
+                    <% console.log(hasLeftReview); %>
 
                   <% if (hasLeftReview) { %>
-
-                          <!-- check if the current user has already left a review -->
-                          <%  for (var i = 0; i < results.album_reviews.length; i++) {
-                            // check if the current user_id matches the current session user_id
-                            if (results.album_reviews[i].user_id === results.current_session_user[0].user_id) {
-                              // found a match!
-                              hasLeftReview = true;
-                              break; // exit the loop since we've found a match
-                            }
-                        } %>
-
                         <!-- display message that user has already left a review for this collection -->
                      
                           <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
