@@ -43,6 +43,9 @@
             <div class="uk-card uk-card-default uk-card-hover uk-card-body uk-width-large" style="margin-bottom: 30px;">
         
                 <h3>Register for Account</h3>
+                <% if (m) { %>
+                    <p class="uk-text-warning uk-text-italic"><%- m %></p>
+                  <% } %>
                 <form class="uk-form-stacked" action="/register" method="POST">
                     <div class="uk-margin">
                         <label class="uk-form-label" for="firstname">

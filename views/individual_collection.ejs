@@ -23,42 +23,56 @@
 <div class="individual_collection_page">
 
         <div class="uk-container uk-container-center">
-            <button class="back_button uk-margin-medium-top uk-align-left" style="margin-right: 0px;">
-                <a href="/allcollections">
-                <span class="back_text">BACK</span></a>
-            </button>
+            
             
             <div class="uk-margin-medium-top">
                 <div class="uk-padding-small">
-                        <%  results.collection_owner_details.forEach((user) => { %>
-                        <h1 class="uk-text-bold uk-text-center" style="font-size: 2.4em; margin: 0px 70px 5px 0px;"><%=user.collection_name%></h1>
-                        <h4 class="uk-text-center uk-margin-small-top"><%=user.collection_desc%></h4>
-                        <p class="uk-text-center uk-text-muted uk-text-italic" style="padding-bottom: 5px;"><%=user.username%><span class="uk-badge" style="margin-left: 20px; padding: 8px; background: #eb982b;"><%=user.genre_type%></span></p>   
-                        <% }); %>
-
-                        <!-- This is a button toggling the modal -->
-                        <div class="hover_text uk-text-center link" style="margin-left: 0px; padding-bottom: 30px; border-bottom: thin solid #eb982b;">
-                            <button uk-toggle="target: #write_review" type="button" class="review_button">
-                            <span class="uk-icon-link; ratio: 1.7; brandiconhover" uk-icon="pencil"  style="color: white; margin-right: 6px;"></span>
-                            <span class="whitetext uk-text-default uk-text-middle">Review Collection</span>
+                   <div uk-grid>
+                        <div class="uk-width-1-6">
+                            <button class="back_button uk-align-left">
+                                <a href="/allcollections">
+                                <span class="back_text">BACK</span></a>
                             </button>
                         </div>
-               
-                    <div id="write_review" uk-modal>
-                        <% if (req.session.sessValid) { %>
-                            
-                            <% let hasLeftReview = false; %>
-                           
-                           <% for (var i = 0; i < results.collection_review_data.length; i++) {
-                                // check if the current user_id matches the current session user_id
-                                if (results.collection_review_data[i].user_id === results.current_session_user[0].user_id) {
-                                // found a match
-                                hasLeftReview = true;
-                                break; // exit the loop since we've found a match
-                                }
-                            }  %>
 
-                            <% if (results.collection_owner_details[0].user_id === results.current_session_user[0].user_id) { %>
+                        <div class="uk-width-expand@m">
+                            <%  results.collection_owner_details.forEach((user) => { %>
+                            <h1 class="uk-text-bold uk-text-center" style="font-size: 2.4em; margin: 0px 70px 5px 0px;"><%=user.collection_name%></h1>
+                            <h4 class="uk-text-center uk-margin-small-top"><%=user.collection_desc%></h4>
+                            <p class="uk-text-center uk-text-muted uk-text-italic" style="padding-bottom: 5px;"><%=user.username%><span class="uk-badge" style="margin-left: 20px; padding: 8px; background: #eb982b;"><%=user.genre_type%></span></p>   
+                            <% }); %>
+                        </div>
+
+                        <div class="uk-width-1-6">
+                            <div class="uk-text-right like-flex" id="if_likes_small">
+                                <form action="/submit_like_collection" method="POST" class="uk-margin-small-bottom" style="margin: 0px;">
+                                    <button class="like_button" type="submit">
+                                        <img src="like.png" class="like_icon">
+                                        <span class="like_text uk-text-middle">LIKE</span>
+                                    </button>
+                                </form>
+                
+                                <div class="uk-text-right" style="margin-right: 8px;">
+                                    <p class="uk-text-meta uk-text-bold">Liked By: <%= results.total_likes[0].likes %></p>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>  
+                   
+                        
+                        <!-- This is a button toggling the modal -->
+                        <div style="margin-top: 15px;">
+                            <div class="hover_text uk-text-center link" style="margin-left: 0px; padding-bottom: 30px; border-bottom: thin solid #eb982b;">
+                                <button uk-toggle="target: #write_review" type="button" class="review_button">
+                                <span class="uk-icon-link; ratio: 1.7; brandiconhover" uk-icon="pencil"  style="color: white; margin-right: 6px;"></span>
+                                <span class="whitetext uk-text-default uk-text-middle">Review Collection</span>
+                                </button>
+                            </div>
+                        </div>
+                    <div id="write_review" uk-modal>
+                        <% if (req.session.sessValid) { %>                           
+
+                            <% if (cflag) { %>
                                 
                                 <!-- Display message that user cannot review their own collection -->
                                 <div class="uk-modal-dialog uk-modal-body">
@@ -66,7 +80,7 @@
                                     <h3>You cannot review your own collection.</h3>
                                 </div>
 
-                            <% } else if (hasLeftReview) { %>
+                            <% } else if (rflag) { %>
                          
                                 <!-- Display message that user has already left a review for this collection -->
                                 <div class="uk-modal-dialog uk-modal-body" style="width: 650px;">

@@ -143,6 +143,12 @@ app.get("/myaccount", function (req, res) {
     //variables containing the user_id in the current session 
     let sessionObj = req.session;
     let user_id = sessionObj.user_id; 
+    
+    if (!user_id) {
+        // user is not logged in, redirect to login page or display error message
+        res.redirect('/login');
+        return;
+    }
    
     let read = `SELECT user_id, first_name, last_name, username, email FROM user WHERE user_id = ?;
     
@@ -157,7 +163,7 @@ app.get("/myaccount", function (req, res) {
     INNER JOIN collection c ON cr.collection_id = c.collection_id
     WHERE c.user_id = ?;`; 
    
-     connection.query(read, [user_id, user_id, user_id], (err, user)=>{
+    connection.query(read, [user_id, user_id, user_id], (err, user)=>{
         if(err) throw err;
 
         let user_data = user[0]; //variable containing all user details for current session user
@@ -167,6 +173,7 @@ app.get("/myaccount", function (req, res) {
         res.render('myaccount', {user_data, user_collections, collection_reviews});
     });
 });
+
 
 // app.post to update the current user's first name in the database
 app.post('/update_first_name', (req, res) => {
@@ -269,6 +276,13 @@ app.get("/album", (req, res) => {
     JOIN collection c ON u.user_id = c.user_id 
     JOIN genre g ON c.main_genre_id = g.genre_id
     WHERE u.user_id = ?;`;
+
+    let left_review_before_sql = `SELECT * FROM album WHERE album_id = ?;
+    
+    SELECT *
+    FROM review r
+    INNER JOIN album_review ar ON r.review_id = ar.review_id
+    WHERE r.user_id = ? AND ar.album_id = ?;`;
         
     let results = {}; // array to store results of each query
 
@@ -299,18 +313,30 @@ app.get("/album", (req, res) => {
                             connection.query(total_likes_sql, [album_id], (err, total_likes) => {
                                 if (err) throw err;
                                 results.total_likes = total_likes;
-                    
+                            
                                 connection.query(current_session_user_sql, [user_id], (err, current_session_user) => {
                                     if (err) throw err;
                                     results.current_session_user = current_session_user;
                         
-                                    results.current_session_user.forEach((user)=> { 
-                                        console.log('session user ' +user);
-                                     });
+                                
+                                    connection.query(left_review_before_sql, [album_id, user_id, album_id], (err, left_review_before) => {
+                                        if (err) throw err;
+                                        hasLeftReview = left_review_before[0];
+                                        
+                                        let reviewf;
+                                        let reviewnum = left_review_before[1].length;
 
+                                        if(reviewnum > 0) {
+                                            reviewf = true;
+                                        } else {
+                                            reviewf = false;
+                                        }
 
-                                    res.render('album', { results: results });
-                                }); 
+                                        res.render('album', { results: results, rflag: reviewf, hasLeftReview });
+
+                                    }); 
+                                    
+                                });    
                             }); 
                         });  
                     });   
@@ -435,8 +461,8 @@ app.post('/albumreview', (req, res) => {
     });
 });
 
-// app.post to submit one 'like' into the corresponding 'likes' field in the database each time it is clicked
-app.post('/submit_like', (req, res) => {
+// app.post to submit one 'like' into the corresponding 'likes' field in the album table each time it is clicked
+app.post('/submit_like_album', (req, res) => {
     // variable to parse the album_id from the URL
     let album_id = url.parse(req.headers.referer, true).query.bid;
 
@@ -445,6 +471,19 @@ app.post('/submit_like', (req, res) => {
     connection.query(sqlinsert, [album_id], (err, data) => {
         if (err) throw err;
         res.redirect(`/album?bid=${album_id}`);
+    });
+});
+
+// app.post to submit one 'like' into the corresponding 'likes' field in the collection table each time it is clicked
+app.post('/submit_like_collection', (req, res) => {
+    // variable to parse the collection_id from the URL
+    let collection_id = url.parse(req.headers.referer, true).query.cid;
+
+    let sqlinsert = `UPDATE collection SET likes = likes + 1 WHERE collection_id = ?;`;
+   
+    connection.query(sqlinsert, [collection_id], (err, data) => {
+        if (err) throw err;
+        res.redirect(`/collection?cid=${collection_id}`);
     });
 });
 
@@ -534,11 +573,16 @@ app.get("/collection", (req, res) => {
     INNER JOIN user ON review.user_id = user.user_id
     WHERE collection_review.collection_id = ?;`;
         
-    let current_session_user_sql = `SELECT u.user_id, u.first_name, u.last_name, u.username, c.collection_id, c.collection_name, c.collection_desc, c.main_genre_id, g.genre_type
-    FROM user u 
-    JOIN collection c ON u.user_id = c.user_id 
-    JOIN genre g ON c.main_genre_id = g.genre_id
-    WHERE u.user_id = ?;`;
+    let is_owner_of_collection_sql = `SELECT collection_id, user_id FROM collection WHERE collection_id = ?;`;
+
+    let left_review_before_sql = `SELECT * FROM collection WHERE collection_id = ?;
+    
+    SELECT *
+    FROM review r
+    INNER JOIN collection_review cr ON r.review_id = cr.review_id
+    WHERE r.user_id = ? AND cr.collection_id = ?;`;
+
+    let total_likes_sql = ` SELECT likes FROM collection WHERE collection_id = ?;`; 
 
     let results = {};
 
@@ -553,12 +597,40 @@ app.get("/collection", (req, res) => {
             connection.query(collection_review_data_sql, [collection_id], (err, collection_review_data)=>{  
                 if(err) throw err;
                 results.collection_review_data = collection_review_data;
-            
-                connection.query(current_session_user_sql, [user_id], (err, current_session_user)=>{  
+
+                connection.query(total_likes_sql, [collection_id], (err, total_likes)=>{  
                     if(err) throw err;
-                    results.current_session_user = current_session_user;
-                
-                    res.render('individual_collection', { results: results });                   
+                    results.total_likes = total_likes;
+            
+                    connection.query(is_owner_of_collection_sql, [collection_id], (err, rows)=>{  
+                        if(err) throw err;
+                        
+                        let isOwnerf;
+                        let collection_owner_id = rows[0].user_id; // modified line
+
+                        if (collection_owner_id === user_id) {
+                            isOwnerf = true;
+                        } else {
+                            isOwnerf = false; // corrected variable name
+                        }
+                    
+                        connection.query(left_review_before_sql, [collection_id, user_id, collection_id], (err, rows) => {
+                            if (err) throw err;
+                            album = rows[0];
+                            
+                            let reviewf;
+                            let reviewnum = rows[1].length;
+
+                            if (rows[1].length === 0) {
+                                reviewf = false;
+                            } else {
+                                reviewf = true;
+                            }
+
+                            res.render('individual_collection', { results: results, cflag: isOwnerf, collection_owner_id, rflag: reviewf, album});   
+
+                        });   
+                    });                                    
                 });
             });  
         });

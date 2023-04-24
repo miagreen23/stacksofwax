@@ -45,7 +45,7 @@
                 <div class="uk-width-1-3@s like-container" id="if_likes_small">
                     <div class="uk-text-right like-flex">
 
-                        <form action="/submit_like" method="POST" class="uk-margin-small-bottom" style="margin: 20px;">
+                        <form action="/submit_like_album" method="POST" class="uk-margin-small-bottom" style="margin: 20px;">
                             <button class="like_button" type="submit">
                                 <img src="like.png" class="like_icon">
                                 <span class="like_text uk-text-middle">LIKE</span>
@@ -163,19 +163,7 @@
                   
                   <% if (req.session.sessValid) { %>
 
-                     <!-- check if the current user has already left a review -->
-                   <%  for (var i = 0; i < results.album_reviews.length; i++) {
-                    // check if the current user_id matches the current session user_id
-                    if (results.album_reviews[i].user_id === results.current_session_user[0].user_id) {
-                      // found a match!
-                      hasLeftReview = true;
-                      break; // exit the loop since we've found a match
-                    }
-                    } %>
-
-                    <% console.log(hasLeftReview); %>
-
-                  <% if (hasLeftReview) { %>
+                  <% if (rflag) { %>
                         <!-- display message that user has already left a review for this collection -->
                      
                           <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
