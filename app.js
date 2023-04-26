@@ -36,7 +36,7 @@ const connection = mysql.createConnection({
     host:'localhost',
     user: 'root',
     password: 'root',
-    database: 'stacksofwax',
+    database: '40354200',
     port: '8889',
     multipleStatements: true
 });
@@ -46,6 +46,10 @@ connection.connect((err)=>{
     if(err) return console.log(err.message);
     console.log("Connected to local MySQL Database");
 });
+  
+// app.listen to print to console the port details
+app.listen(process.env.PORT || 3000);
+console.log('Server is listening at https://localhost:3000/');
 
 // app.get to redirect default / route to /home
 app.get("/", (req, res) => {
@@ -364,9 +368,9 @@ app.post('/add_to_existing_collection', (req, res) => {
         } else {
             // if album_id doesn't exist, insert it into album_collection table
             let sqlinsert = `INSERT INTO album_collection (album_collection_id, collection_id, album_id)
-            VALUES (NULL, "${existing_collection_id}", "${album_id}");`;
+            VALUES (NULL, ?, ?);`;
            
-            connection.query(sqlinsert, (err, data) => {
+            connection.query(sqlinsert, [existing_collection_id, album_id], (err, data) => {
                 if (err) throw err;
                 res.redirect(`/mycollections`);
             });
@@ -383,8 +387,8 @@ app.post('/create_new_collection', (req, res) => {
     let desc = req.body.description_field;
     let genre_id = req.body.genre_field;
 
-    let sqlinsert = `INSERT INTO collection (collection_id, user_id, collection_name, collection_desc, main_genre_id)
-    VALUES (NULL, ?, ?, ?, ?);`;
+    let sqlinsert = `INSERT INTO collection (collection_id, user_id, collection_name, collection_desc, main_genre_id, likes)
+    VALUES (NULL, ?, ?, ?, ?, "0");`;
    
     connection.query(sqlinsert, [user_id, title, desc, genre_id], (err, data) => {
         if (err) throw err;
@@ -402,8 +406,8 @@ app.post('/add_to_new_collection', (req, res) => {
     let desc = req.body.description_field;
     let genre_id = req.body.genre_field;
 
-    let sqlinsert = `INSERT INTO collection (collection_id, user_id, collection_name, collection_desc, main_genre_id)
-    VALUES (NULL, ?, ?, ?, ?);
+    let sqlinsert = `INSERT INTO collection (collection_id, user_id, collection_name, collection_desc, main_genre_id, likes)
+    VALUES (NULL, ?, ?, ?, ?, "0");
     
     SET @last_id_in_collection = LAST_INSERT_ID();
     
@@ -813,9 +817,9 @@ app.post('/register', (req, res) => {
   
               // insert new user with the hashed password
               const sqlinsert = `INSERT INTO user (user_id, first_name, last_name, username, email, password)
-                VALUES (NULL, "${firstname}", "${lastname}", "${username}", "${email}", "${hashedPassword}");`;
+                VALUES (NULL, ?, ?, ?, ?, ?);`;
   
-              connection.query(sqlinsert, (err, data) => {
+              connection.query(sqlinsert, [firstname, lastname, username, email, hashedPassword], (err, data) => {
                 if (err) throw err;
   
                 // start a new session for the user
@@ -919,7 +923,3 @@ app.get("/logout", (req, res) => {
     req.session.destroy();
     res.redirect("/login");
 });
-  
-// app.listen to print to console the port details
-app.listen(process.env.PORT || 3000);
-console.log('Server is listening at https://localhost:3000/');

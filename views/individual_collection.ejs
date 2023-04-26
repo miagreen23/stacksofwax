@@ -28,14 +28,14 @@
             <div class="uk-margin-medium-top">
                 <div class="uk-padding-small">
                    <div uk-grid>
-                        <div class="uk-width-1-6">
+                        <div class="uk-width-1-6" id="collection_back_small">
                             <button class="back_button uk-align-left">
                                 <a href="/allcollections">
                                 <span class="back_text">BACK</span></a>
                             </button>
                         </div>
 
-                        <div class="uk-width-expand@m">
+                        <div class="uk-width-expand@m" id="collection_details_small">
                             <%  results.collection_owner_details.forEach((user) => { %>
                             <h1 class="uk-text-bold uk-text-center" style="font-size: 2.4em; margin: 0px 70px 5px 0px;"><%=user.collection_name%></h1>
                             <h4 class="uk-text-center uk-margin-small-top"><%=user.collection_desc%></h4>
@@ -43,7 +43,7 @@
                             <% }); %>
                         </div>
 
-                        <div class="uk-width-1-6">
+                        <div class="uk-width-1-6" id="collection_like_small">
                             <div class="uk-text-right like-flex" id="if_likes_small">
                                 <form action="/submit_like_collection" method="POST" class="uk-margin-small-bottom" style="margin: 0px;">
                                     <button class="like_button" type="submit">

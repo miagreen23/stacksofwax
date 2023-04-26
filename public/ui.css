@@ -28,16 +28,13 @@ body {
     color: #1E1E1E;
 }
 
-.brandiconhover :hover {
+.brandiconhover:hover {
     color: #dc8d26;
 }
 
-#whiteiconhover :hover {
+#whiteiconhover:hover {
     color: #dddddd;
 }
-
-
-
 
 
 /* navigation bar additional styling */
@@ -46,10 +43,7 @@ body {
 }
 
 
-
-
-/* my button styling */ 
-
+/* general my button styling */ 
 .brand_button_solid:hover {
     background-color: #dc8d26;
     text-decoration: none;
@@ -61,11 +55,7 @@ body {
 }
 
 
-
-
-
 /* landing section styling */ 
-
 .uk-container .landing {
     height: 100vh; /*580px;*/
     margin-top: 70px;
@@ -89,10 +79,7 @@ body {
 }
 
 
-
-
-
-/* "Find out why others love it" anon user banner styling */ 
+/* anonymous 'get started' banner styling */ 
 .anonbanner {
     background-color: #eb982b;
 }
@@ -137,10 +124,7 @@ body {
 }
 
 
-
-
-
-/* album grids styling */ 
+/* 'albums we love' grid banner */ 
 .albumgrids {
     height: fit-content;
     background-color: white;
@@ -150,8 +134,6 @@ body {
 .gridbox {
     width: 200px;
 }
-
-
 
 .albumgrids .gridbox:hover {
     scale: 1.02;
@@ -191,7 +173,7 @@ body {
 
 
 
-/* filter/balloon section styling */ 
+/* filter/balloon footer styling */ 
 .filterbanner {
     width: 100%;
     background-image: none;
@@ -217,7 +199,7 @@ body {
 }
 
 
-/* toppicks styling */ 
+/* toppicks banner styling */ 
 .toppicks {
     background-color: #eb982b;
     height: 470px;
@@ -259,15 +241,12 @@ body {
     color: #b3b3b3;
 }
 
-
 .toppickscard .icons {
     margin-bottom: 20px; 
 }
 
 
-
-
-/* footer styling */ 
+/* thin footer styling */ 
 .footer {
     background-color: rgb(255, 255, 255);
 }
@@ -280,7 +259,6 @@ body {
 .footerleft {
     padding: 50px;
 }
-
 
 
 /* individual album page styling */
@@ -469,10 +447,8 @@ body {
     flex-direction: column;
 }
   
-  
 
-
-/* collections page styling */
+/* all collections page styling */
 #collections_page_body {
     background-color: white;
 }
@@ -505,7 +481,6 @@ body {
 }
 
 
-
 /* all albums page styling */
 #all_albums_body {
     background-color: white;
@@ -532,6 +507,7 @@ body {
     color: #eb982b;
 }
 
+
 /* individual collection page styling */
 #individual_collection_body {
     background-color: rgb(255, 255, 255);
@@ -545,11 +521,9 @@ body {
     margin-bottom: 40px;
 }
 
-
 .collection_review {
     width: 80%;
 }
-
 
 .individual_collection_page .review_button {
     width: fit-content;
@@ -557,13 +531,10 @@ body {
 }
 
 
-
-
 /* user collections/my collections styling */ 
 #user_collections_body {
     background-color: rgb(255, 255, 255);
 }
-
 
 .user_collections_page {
     background-color: #F3F3F3;
@@ -595,7 +566,6 @@ body {
     font-size: smaller;
     color: #b3b3b3;
 }
-
 
 .mycollectioncard:hover {
     scale: 1.02;
@@ -636,14 +606,10 @@ body {
 }
 
 
-
-
 /* login page styling */ 
 #login_page_body {
     background-color: rgb(255, 255, 255);
 }
-
-
 
 
 /* register page styling */ 
@@ -687,7 +653,6 @@ body {
     background-color: #dc8d26;
 }
 
-
 .browse_button {
     background-color: #eb982b;
     border-radius: 30px;
@@ -703,8 +668,6 @@ body {
 }
 
 
-
-
 /* search page styling */ 
 #search_body {
     background-color: white;
@@ -717,7 +680,6 @@ body {
     margin-bottom: 40px;
     background-color: #F3F3F3;
 }
-
 
 .search_hover{
     text-decoration: none;
@@ -745,13 +707,27 @@ body {
     .landing #heading {
         padding-right: 500px;
     }
-  
 }
 
 @media only screen and (max-width: 1080px) {
     .landing #heading {
         padding-right: 500px;
     }
+
+    #collection_back_small {
+        float: left;
+        width: 25%;
+     }
+
+     #collection_details_small {
+        float: left;
+        width: 50%;
+     }
+
+     #collection_like_small {
+        float: left;
+        width: 25%;
+     }
 }
 
 @media only screen and (max-width: 960px) {
@@ -765,13 +741,43 @@ body {
 
   .landing #heading {
     padding-right: 400px;
-}
+    }
+
+    #collection_back_small {
+    float: left;
+    width: 25%;
+    }
+
+    #collection_details_small {
+    float: left;
+    width: 50%;
+    }
+
+    #collection_like_small {
+    float: left;
+    width: 25%;
+    }
 }
 
 @media only screen and (max-width: 780px) {
     .landing #heading {
         padding-right: 100px;
     }
+
+    #collection_back_small {
+        float: left;
+        width: 25%;
+     }
+
+     #collection_details_small {
+        float: left;
+        width: 50%;
+     }
+
+     #collection_like_small {
+        float: left;
+        width: 25%;
+     }
 }
 
 @media only screen and (max-width: 640px) {
@@ -820,6 +826,20 @@ body {
         width: 50%;
      }
 
+     #collection_back_small {
+        float: left;
+        width: 20%;
+     }
+
+     #collection_details_small {
+        float: left;
+        width: 50%;
+     }
+
+     #collection_like_small {
+        float: left;
+        width: 30%;
+     }
 }
 
 
@@ -850,7 +870,6 @@ body {
     body {
         background-size: 230%;
     }
-
 }
 
 @media only screen and (max-width: 434px) {
@@ -866,8 +885,6 @@ body {
     .toppicks .titlebanner {
         margin-bottom: 5px;
     }
-
-  
 } 
 
 @media only screen and (max-width: 390px) {

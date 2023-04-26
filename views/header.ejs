@@ -1,10 +1,7 @@
-
-
 <% if (req.session.sessValid) { %>
 
-    <header> <!-- Main Navbar -->
+    <header> <!-- main navbar for logged in users -->
         <div class="uk-preserve-color">
-    
             <div uk-sticky="start: 500; animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent uk-dark">
         
                 <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
@@ -62,10 +59,10 @@
         </div>
     </div>
 
-
+    <!-- main navbar for anonymous/not logged in users -->
     <% } else { %>
 
-        <header> <!-- Main Navbar -->
+        <header> 
             <div class="uk-preserve-color">
         
                 <div uk-sticky="start: 500; animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent uk-dark">
@@ -121,6 +118,5 @@
                 </ul>
             </div>
         </div>
-
-
+        
 <% } %>

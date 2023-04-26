@@ -1,131 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>stacksofwax</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>stacksofwax</title>
 
-    <!-- My CSS -->
-    <link rel="stylesheet" href="ui.css">
+  <!-- My CSS -->
+  <link rel="stylesheet" href="ui.css">
 
-    <!-- UIkit CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/css/uikit.min.css" />
+  <!-- UIkit CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/css/uikit.min.css" />
 
-    <!-- UIkit JS -->
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit-icons.min.js"></script>
+  <!-- UIkit JS -->
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit-icons.min.js"></script>
 </head>
 <body id="my_account_body">
 
 <%- include('header') %>
 
 <div class="my_account_page">
+    <div class="uk-container uk-container-center">
 
-        <div class="uk-container uk-container-center">
-           
-            <div class="uk-padding-small  uk-margin-medium-top">
-                <% user_data.forEach((user) => { %>
+        <div class="uk-padding-small  uk-margin-medium-top">
+            
+            <% user_data.forEach((user) => { %>
                 <h1 class="uk-text-bold brandtext" style="font-size: 2.4em; margin: 0px 70px 0px 0px; padding-bottom: 30px; border-bottom: thin solid rgb(203, 203, 203);">Welcome, <%=user.first_name%>!</h1>
                 <% if (user_collections.length > 0) { %>
-                    <h3 class="uk-text-bolder" style="margin-top: 25px; margin-bottom: 10px;">So far, you have <%= user_collections.length %> collections:</h3>
-               
-                    <% user_collections.forEach((collection) => { %>
-                        <a href="/collection?cid=<%= collection.collection_id %>"><h4 id="collection_list" class="uk-margin-small-top uk-text-muted"><%= collection.collection_name %>  |   </h4></a>
-                   <% }); %>
-                 
-                <% } else { %>
-                    <h3>You haven't made any collections yet.</h3>
-                    <p>Why not browse through our albums to find inspiration?</p>
-                    <a href="/allalbums"><button class="browse_button">Browse Albums</button></a>
-                <% } %>
-            </div>
+                <h3 class="uk-text-bolder" style="margin-top: 25px; margin-bottom: 10px;">So far, you have <%= user_collections.length %> collections:</h3>
 
+                <% user_collections.forEach((collection) => { %>
+                    <a href="/collection?cid=<%= collection.collection_id %>">
+                    <h4 id="collection_list" class="uk-margin-small-top uk-text-muted"><%= collection.collection_name %> | </h4>
+                    </a>
+                <% }); %>
 
-            <div class="whitebackground uk-margin-medium-bottom uk-padding-large">
-                <div class="uk-grid">
-                    <div class="uk-width-3-4">
-                        <h3 class="uk-text-bold">Update Account Details</h3>
-                        <p><b class="brandtext">Name:</b> <%= user.first_name %> <%= user.last_name %></p>
-                        <p><b class="brandtext">Username:</b> <%= user.username %></p>
-                        <p><b class="brandtext">Name:</b> <%= user.email %></p>
-                        
-                    </div>
-                    
-                    <div class="uk-width-1-4">
-                        <span uk-icon="icon: pencil" class="uk-align-right brandiconhover" style="color: #eb982b;" uk-toggle="target: #update_details" uk-tooltip="title: Update Details;"></span>
-                    </div>
-                </div>
-
-              
-                <div id="update_details" uk-modal>
-                    <div class="uk-modal-dialog uk-modal-body">
-                        <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
-                        <h2 class="uk-modal-title">Update Details</h2>
-                        <form class="uk-grid-small uk-flex-middle" action="/update_first_name" method="POST" uk-grid>
-                          
-                            <div class="uk-width-3-4@s">              
-                                <input name="first_name_field" class="uk-input" type="text" placeholder="First Name" style="margin-bottom: 5px;">
-                            </div>       
-                            
-                            <div class="uk-width-1-4@s">
-                                <button type="submit" class="update_details_button" style="width: 100%;">Update</button>
-                            </div>  
-                        </form>
-
-                        <form class="uk-grid-small uk-flex-middle" action="/update_last_name" method="POST" uk-grid>
-                          
-                            <div class="uk-width-3-4@s">              
-                                <input name="last_name_field" class="uk-input" type="text" placeholder="Last Name" style="margin-bottom: 5px;">
-                            </div>       
-                            
-                            <div class="uk-width-1-4@s">
-                                <button type="submit" class="update_details_button" style="width: 100%;" class="update_details_button">Update</button>
-                            </div>  
-                        </form>
-
-                        <form class="uk-grid-small uk-flex-middle" action="/update_username" method="POST" uk-grid>
-                          
-                            <div class="uk-width-3-4@s">              
-                                <input name="username_field" class="uk-input" type="text" placeholder="Username" style="margin-bottom: 5px;">
-                            </div>       
-                            
-                            <div class="uk-width-1-4@s">
-                                <button type="submit" class="update_details_button" style="width: 100%;" class="update_details_button">Update</button>
-                            </div>  
-                        </form>
-
-                        <form class="uk-grid-small uk-flex-middle" action="/update_email" method="POST" uk-grid>
-                          
-                            <div class="uk-width-3-4@s">              
-                                <input name="email_field" class="uk-input" type="text" placeholder="Email" style="margin-bottom: 5px;">
-                            </div>       
-                            
-                            <div class="uk-width-1-4@s">
-                                <button type="submit" class="update_details_button" style="width: 100%;" class="update_details_button">Update</button>
-                            </div>  
-                        </form>
-
-
-                    
-                  
-
-                    </div>
-                    
-                </div>
-                
-                
-
-               
-            </div>
-            <% }); %>
+            <% } else { %>
+                <h3>You haven't made any collections yet.</h3>
+                <p>Why not browse through our albums to find inspiration?</p>
+                <a href="/allalbums"><button class="browse_button">Browse Albums</button></a>
+            <% } %>
         </div>
+
+
+        <div class="whitebackground uk-margin-medium-bottom uk-padding-large">
+            <div class="uk-grid">
+                <div class="uk-width-3-4">
+                    <h3 class="uk-text-bold">Update Account Details</h3>
+                    <p><b class="brandtext">Name:</b> <%= user.first_name %> <%= user.last_name %></p>
+                    <p><b class="brandtext">Username:</b> <%= user.username %></p>
+                    <p><b class="brandtext">Name:</b> <%= user.email %></p>
+                </div>
+
+                <div class="uk-width-1-4">
+                    <span uk-icon="icon: pencil" class="uk-align-right brandiconhover" style="color: #eb982b;" uk-toggle="target: #update_details" uk-tooltip="title: Update Details;"></span>
+                </div>
+            </div>
+
+
+            <div id="update_details" uk-modal>
+                <div class="uk-modal-dialog uk-modal-body">
+                    <button id="close_button" class="uk-modal-close-default" type="button" style="margin: 8px;">Cancel</button>
+                    <h2 class="uk-modal-title">Update Details</h2>
+                    
+                    <form class="uk-grid-small uk-flex-middle" action="/update_first_name" method="POST" uk-grid>
+                        <div class="uk-width-3-4@s">
+                            <input name="first_name_field" class="uk-input" type="text" placeholder="First Name" style="margin-bottom: 5px;">
+                        </div>
+
+                        <div class="uk-width-1-4@s">
+                            <button type="submit" class="update_details_button" style="width: 100%;">Update</button>
+                        </div>
+                    </form>
+
+                    <form class="uk-grid-small uk-flex-middle" action="/update_last_name" method="POST" uk-grid>
+                        <div class="uk-width-3-4@s">
+                            <input name="last_name_field" class="uk-input" type="text" placeholder="Last Name" style="margin-bottom: 5px;">
+                        </div>
+
+                        <div class="uk-width-1-4@s">
+                            <button type="submit" class="update_details_button" style="width: 100%;" class="update_details_button">Update</button>
+                        </div>
+                    </form>
+
+                    <form class="uk-grid-small uk-flex-middle" action="/update_username" method="POST" uk-grid>
+                        <div class="uk-width-3-4@s">
+                            <input name="username_field" class="uk-input" type="text" placeholder="Username" style="margin-bottom: 5px;">
+                        </div>
+
+                        <div class="uk-width-1-4@s">
+                            <button type="submit" class="update_details_button" style="width: 100%;" class="update_details_button">Update</button>
+                        </div>
+                    </form>
+
+                    <form class="uk-grid-small uk-flex-middle" action="/update_email" method="POST" uk-grid>
+                        <div class="uk-width-3-4@s">
+                            <input name="email_field" class="uk-input" type="text" placeholder="Email" style="margin-bottom: 5px;">
+                        </div>
+
+                        <div class="uk-width-1-4@s">
+                            <button type="submit" class="update_details_button" style="width: 100%;" class="update_details_button">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+      <% }); %>
+    </div>
 </div>
 
+  <%- include('filterbanner') %>
 
-    <%- include('filterbanner') %> 
-
-    <%- include('footer') %> 
+  <%- include('footer') %>
 
 </body>
 </html>

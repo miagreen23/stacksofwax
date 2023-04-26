@@ -1,115 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>stacksofwax</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>stacksofwax</title>
 
-    <!-- My CSS -->
-    <link rel="stylesheet" href="ui.css">
+  <!-- My CSS -->
+  <link rel="stylesheet" href="ui.css">
 
-    <!-- UIkit CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/css/uikit.min.css" />
+  <!-- UIkit CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/css/uikit.min.css" />
 
-    <!-- UIkit JS -->
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit-icons.min.js"></script>
-   
+  <!-- UIkit JS -->
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.22/dist/js/uikit-icons.min.js"></script>
+
 </head>
+
 <body id="all_albums_body">
 
-<%- include('header') %>
+  <%- include('header') %>
 
-    <div class="all_albums_page uk-margin-medium-bottom">
+  <div class="all_albums_page uk-margin-medium-bottom">
 
-        <div class="uk-container uk-container-center">
-            <button class="back_button uk-margin-medium-top uk-align-left">
-                <a href="/">
-                <span class="back_text">BACK</span></a>
-            </button>
+    <div class="uk-container uk-container-center">
+      <button class="back_button uk-margin-medium-top uk-align-left">
+        <a href="/">
+          <span class="back_text">BACK</span></a>
+      </button>
 
-            <h1 class="uk-text-bold uk-text-center" style="font-size: 2.4em; padding-right: 80px; padding-bottom: 40px; border-bottom: thin solid rgb(194, 194, 194);">All Albums</h1>           
-            
-            <div class="uk-grid uk-margin-medium-top" uk-filter="target: .js-filter">
-                <div class="uk-width-1-4@s">
-                    <p class="uk-text-bold uk-margin-small-top" style="margin-bottom: 5px;">SEARCH</p>
-                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by artist name..." style="width: 95%; margin-bottom: 35px; height: 30px; border: thin solid rgb(222, 222, 222); background-color: #F3F3F3;">
-                    <p class="uk-text-bold uk-margin-remove" style="margin-bottom: 5px;">GENRE</p> 
-                    <div class="uk-panel uk-panel-scrollable uk-margin-remove" style="height: 300px;">
-                        
-                        <ul class="uk-subnav uk-subnav-pill uk-align-left">
-                            <li class="uk-active" uk-filter-control><a href="#">View All</a></li>
-                            <% results.genre_list.forEach((genre) => { %>
-                                <li uk-filter-control="[data-genre='<%=genre.genre_type%>']"><a href="#"><%=genre.genre_type%></a></li>
-                            <% }); %>
+      <h1 class="uk-text-bold uk-text-center" style="font-size: 2.4em; padding-right: 80px; padding-bottom: 40px; border-bottom: thin solid rgb(194, 194, 194);">All Albums</h1>
 
-                        </ul>
-                    </div>
-                    <p class="uk-text-bold uk-margin-medium-top" style="margin-bottom: 5px;">ARTIST</p>
-                    <div class="uk-panel uk-panel-scrollable uk-margin-remove" style="height: 300px;">
-                        
-                        <ul class="uk-subnav uk-subnav-pill uk-align-left">
-                            <li uk-filter-control><a href="#">View All</a></li>
-                            <% results.artist_list.forEach((artist) => { %>
-                                <li uk-filter-control="[data-artist='<%=artist.artist_name%>']"><a href="#"><%=artist.artist_name%></a></li>
-                            <% }); %>
+      <div class="uk-grid uk-margin-medium-top" uk-filter="target: .js-filter">
+        <div class="uk-width-1-4@s">
+          <p class="uk-text-bold uk-margin-small-top" style="margin-bottom: 5px;">SEARCH</p>
+          <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by artist name..." style="width: 95%; margin-bottom: 35px; height: 30px; border: thin solid rgb(222, 222, 222); background-color: #F3F3F3;">
+          <p class="uk-text-bold uk-margin-remove" style="margin-bottom: 5px;">GENRE</p>
+          <div class="uk-panel uk-panel-scrollable uk-margin-remove" style="height: 300px;">
 
-                        </ul>
-                    </div>
-                </div>
-                <div class="uk-width-3-4@s">
-                    
-                    <ul class="uk-grid uk-child-width-1-2 uk-child-width-1-4@m js-filter" id="myUL">
-                       
-                        <% results.album_and_genres.forEach((album) => { %>
-                        <li data-genre="<%= album.genre_type %>" data-artist="<%= album.artist_name %>" style="margin: 15px 0px 15px 0px;">
-                            <div class="uk-inline-clip uk-transition-toggle uk-text-center" tabindex="0">
-                                <img src="<%= album.img_url %>" width="1800" height="1200" alt="">
-                                <div class="uk-transition-slide-bottom-medium uk-position-cover uk-overlay uk-overlay-default uk-flex uk-flex-center uk-flex-middle" style="padding-top: 28%">
-                                    <div class="uk-flex-column" id="album_hover">
-                                        <a href="/album?bid=<%= album.album_id %>">
-                                            <div><h4 class="uk-margin-remove uk-text-bolder uk-text-secondary"><%= album.album_name %></h4></div>
-                                            <div><p style="color: rgb(152, 152, 152);"><%= album.artist_name %></p></div>
-                                            <div><span><a href="/album?bid=<%= album.album_id %>" class="brandiconhover" uk-icon="arrow-right" style="scale: 1.7; margin: 5px;"></a></span></div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <% }); %>
-                    </ul>
-                </div>
-            </div>
-            
+            <ul class="uk-subnav uk-subnav-pill uk-align-left">
+              <li class="uk-active" uk-filter-control><a href="#">View All</a></li>
+              <% results.genre_list.forEach((genre) => { %>
+              <li uk-filter-control="[data-genre='<%=genre.genre_type%>']"><a href="#"><%=genre.genre_type%></a></li>
+              <% }); %>
 
+            </ul>
+          </div>
+          <p class="uk-text-bold uk-margin-medium-top" style="margin-bottom: 5px;">ARTIST</p>
+          <div class="uk-panel uk-panel-scrollable uk-margin-remove" style="height: 300px;">
+
+            <ul class="uk-subnav uk-subnav-pill uk-align-left">
+              <li uk-filter-control><a href="#">View All</a></li>
+              <% results.artist_list.forEach((artist) => { %>
+              <li uk-filter-control="[data-artist='<%=artist.artist_name%>']"><a href="#"><%=artist.artist_name%></a></li>
+              <% }); %>
+
+            </ul>
+          </div>
         </div>
-     
+
+        <div class="uk-width-3-4@s">
+          
+            <ul class="uk-grid uk-child-width-1-2 uk-child-width-1-4@m js-filter" id="myUL">
+            <% results.album_and_genres.forEach((album) => { %>
+                <li data-genre="<%= album.genre_type %>" data-artist="<%= album.artist_name %>" style="margin: 15px 0px 15px 0px;">
+                    <div class="uk-inline-clip uk-transition-toggle uk-text-center" tabindex="0">
+                        <img src="<%= album.img_url %>" width="1800" height="1200" alt="">
+                        <div class="uk-transition-slide-bottom-medium uk-position-cover uk-overlay uk-overlay-default uk-flex uk-flex-center uk-flex-middle" style="padding-top: 28%">
+                        
+                            <div class="uk-flex-column" id="album_hover">
+                                <a href="/album?bid=<%= album.album_id %>">
+                                <div>
+                                    <h4 class="uk-margin-remove uk-text-bolder uk-text-secondary"><%= album.album_name %></h4>
+                                </div>
+                                <div>
+                                    <p style="color: rgb(152, 152, 152);"><%= album.artist_name %></p>
+                                </div>
+                            <div><span><a href="/album?bid=<%= album.album_id %>" class="brandiconhover" uk-icon="arrow-right" style="scale: 1.7; margin: 5px;"></a></span></div></a>
+                        </div>
+                        </div>
+                    </div>
+                </li>
+            <% }); %>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <%- include('filterbanner') %> 
+  <%- include('filterbanner') %>
 
-    <%- include('footer') %> 
-    <script>
-        function myFunction() {
-          // Declare variables
-          var input, filter, ul, li, a, i, txtValue;
-          input = document.getElementById('myInput');
-          filter = input.value.toUpperCase();
-          ul = document.getElementById("myUL");
-          li = ul.getElementsByTagName('li');
-        
-          // Loop through all list items, and hide those who don't match the search query
-          for (i = 0; i < li.length; i++) {
-            a = li[i].getElementsByTagName("a")[0];
-            txtValue = a.textContent || a.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              li[i].style.display = "";
-            } else {
-              li[i].style.display = "none";
-            }
-          }
+  <%- include('footer') %>
+
+  <script>
+    // script to enable search filter bar to run
+    function myFunction() {
+      // variable declaration
+      var input, filter, ul, li, a, i, txtValue;
+      input = document.getElementById('myInput');
+      filter = input.value.toUpperCase();
+      ul = document.getElementById("myUL");
+      li = ul.getElementsByTagName('li');
+
+      // code to loop through all the items
+      for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("a")[0];
+        txtValue = a.textContent || a.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          li[i].style.display = "";
+        } else {
+          li[i].style.display = "none";
         }
-        </script>
+      }
+    }
+  </script>
 </body>
+
 </html>
