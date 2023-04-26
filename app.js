@@ -679,6 +679,13 @@ app.get("/mycollections", function (req, res) {
     let sessionObj = req.session;
     let user_id = sessionObj.user_id;
 
+    // checks to make sure user is logged in before allowing them to access their collections page
+    if (!user_id) {
+        // user is not logged in, redirect to login page or display error message
+        res.redirect('/login');
+        return;
+    }
+
     let readCollections = `SELECT collection_id, user_id, collection_name, collection_desc, main_genre_id
         FROM collection WHERE user_id = ?;
 
@@ -915,8 +922,7 @@ app.get("/login", function (req, res) {
       });
     });
   });
-  
-  
+
   
 // app.get route to end the session if a user chooses to logout, will redirect to login page
 app.get("/logout", (req, res) => {
